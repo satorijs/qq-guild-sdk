@@ -6,4 +6,4 @@ const defaultOptions: Options = {
   type: 'sandbox'
 }
 
-export const createBot = (options: Bot.Options) => new Bot(merge(defaultOptions))
+export const createBot = (options: Bot.Options) => new Bot(merge(defaultOptions, options))
