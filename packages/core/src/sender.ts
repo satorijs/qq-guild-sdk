@@ -1,6 +1,13 @@
 import { User } from './user'
 
-export interface Message {}
+export interface Message {
+  id: string
+  author: User
+  content: string
+  guildId: string
+  channelId: string
+  timestamp: Date
+}
 
 export namespace Message {
   export interface EmbedField {
@@ -27,18 +34,12 @@ export namespace Message {
     msgId?: string
     content: string
   }
-  export interface Response {
-    id: string
+  export interface Response extends Message {
     tts: boolean
     type: number
     flags: number
     pinned: boolean
-    author: User
     embeds: Embed[]
-    content: string
-    guildId: string
-    channelId: string
-    timestamp: Date
     mentionEveryone: boolean
   }
 }
