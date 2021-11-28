@@ -1,0 +1,9 @@
+.*
+esbuild.ts
+tsconfig.json
+tsconfig.dts.json
+
+src
+test
+temp
+coverage

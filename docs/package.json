@@ -1,0 +1,15 @@
+{
+  "name": "@qq-guild-sdk/docs",
+  "version": "0.1.0",
+  "description": "qq guild sdk docs",
+  "main": "index.js",
+  "author": "yijie",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vuepress dev",
+    "build": "vuepress build"
+  },
+  "devDependencies": {
+    "vuepress-vite": "^2.0.0-beta.27"
+  }
+}

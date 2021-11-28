@@ -1,0 +1,15 @@
+{
+  "name": "@qq-guild-sdk/core",
+  "version": "0.1.0",
+  "description": "qq guild sdk",
+  "main": "dist/index.js",
+  "author": "yijie",
+  "license": "MIT",
+  "scripts": {
+    "build": "ts-node esbuild.ts && yarn build:dts",
+    "build:dts": "tsc -p tsconfig.dts.json"
+  },
+  "devDependencies": {
+    "esbuild": "^0.14.0"
+  }
+}

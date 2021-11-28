@@ -1,0 +1,19 @@
+{
+  "name": "qq-guild-sdk",
+  "version": "0.1.0",
+  "description": "qq guild sdk",
+  "main": "dist/index.js",
+  "author": "yijie",
+  "license": "MIT",
+  "scripts": {
+    "build": "ts-node esbuild.ts && yarn build:dts",
+    "build:dts": "tsc -p tsconfig.dts.json"
+  },
+  "dependencies": {
+    "lodash.merge": "^4.6.2"
+  },
+  "devDependencies": {
+    "@types/lodash.merge": "^4.6.6",
+    "esbuild": "^0.14.0"
+  }
+}
