@@ -3,6 +3,7 @@ dist
 temp
 .temp
 .cache
+.env
 
 yarn.lock
 node_modules/
