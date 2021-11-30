@@ -1,12 +1,33 @@
 import { User } from './common'
 
 export interface Message {
+  /** 消息 id */
   id: string
+  /** 消息创建者 */
   author: User
+  /** 消息内容 */
   content: string
+  /** 频道 id */
   guildId: string
+  /** 子频道 id */
   channelId: string
+  /** 消息创建时间 */
   timestamp: Date
+  /** 消息编辑时间 */
+  editedTimestamp: Date
+  /** 是否是@全员消息 */
+  mentionEveryone: boolean
+  // /** 附件 */
+  // attachments: Attachment
+  /** embed */
+  embeds: Message.Embed[]
+  /** 消息中@的人 */
+  mentions?: User
+  // /** 消息创建者的member信息 */
+  // member: Member
+  // /** ark消息 */
+  // ark: Ark
+
 }
 
 export namespace Message {
