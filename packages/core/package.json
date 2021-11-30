@@ -18,10 +18,12 @@
     "build": "ts-node esbuild.ts && yarn build:dts",
     "build:dts": "tsc -p tsconfig.dts.json"
   },
-  "devDependencies": {
-    "esbuild": "^0.14.0"
-  },
   "dependencies": {
-    "axios": "^0.24.0"
+    "axios": "^0.24.0",
+    "websocket": "^1.0.34"
+  },
+  "devDependencies": {
+    "@types/websocket": "^1.0.4",
+    "esbuild": "^0.14.0"
   }
 }
