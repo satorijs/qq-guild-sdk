@@ -66,4 +66,4 @@ namespace Utils {
   export const camelCaseObjKeys = doAllKeys(camelCase as (string?: string) => string) as <T>(o: {}) => T
 }
 
-export default Utils
+export = Utils

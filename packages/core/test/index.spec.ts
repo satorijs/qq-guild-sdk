@@ -9,7 +9,7 @@ declare namespace process {
   }
 }
 
-describe('Bot', () => {
+describe('Bot', function () {
   const bot = new Bot({
     app: {
       id: process.env.id,
@@ -25,5 +25,19 @@ describe('Bot', () => {
       expect(guilds[0]).to.be.an('object')
       expect(guilds[0].name).to.be.eq(await bot.guild(guilds[0].id).then(g => g.name))
     }
+  })
+
+  this.timeout(30000)
+  it('should connect server by websocket.', async () => {
+    await bot.startClient(Bot.Intents.AT_MESSAGE | Bot.Intents.GUILDS)
+    return new Promise<void>(resolve => {
+      bot.on('ready', () => {
+        resolve()
+      })
+    }).then(() => new Promise<void>(resolve => {
+      bot.on('message', msg => {
+        resolve()
+      })
+    }))
   })
 })
