@@ -1,4 +1,4 @@
-import { User } from './user'
+import { User } from './common'
 
 export interface Message {
   id: string
