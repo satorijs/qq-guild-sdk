@@ -68,6 +68,10 @@ export class Bot {
   get guilds() {
     return this.$request.get<Guild[]>('/users/@me/guilds')
   }
+
+  guild(id: string) {
+    return this.$request.get<Guild>(`/guilds/${ id }`)
+  }
 }
 
 export namespace Bot {
