@@ -20,5 +20,8 @@
   },
   "devDependencies": {
     "esbuild": "^0.14.0"
+  },
+  "dependencies": {
+    "axios": "^0.24.0"
   }
 }
