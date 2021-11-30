@@ -2,7 +2,8 @@
   "name": "@qq-guild-sdk/core",
   "version": "0.1.0",
   "description": "qq guild sdk",
-  "main": "dist/index.js",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
   "author": "yijie",
   "license": "MIT",
   "repository": {
