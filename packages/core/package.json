@@ -1,6 +1,6 @@
 {
   "name": "@qq-guild-sdk/core",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "qq guild sdk",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
