@@ -1,6 +1,6 @@
 import { User } from './common'
-import { InnerAxiosInstance } from './bot'
 import { isString } from './utils'
+import { InnerAxiosInstance } from './api'
 
 export interface Message {
   /** 消息 id */

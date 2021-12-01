@@ -1,35 +1,12 @@
 import { client as WebSocketClient } from 'websocket'
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { createSender, Message, Sender } from './sender'
 import { camelCaseObjKeys, snakeCaseObjKeys } from './utils'
-import { Channel, Guild, User } from './common'
+import { User } from './common'
 import { Events } from './events'
+import { Api, attachApi } from './api'
 
-export interface Bot {
-  send: Sender
-}
-
-type TwoParamsMethod = 'get' | 'delete' | 'head' | 'options'
-type ThreeParamsMethod = 'post' | 'put' | 'patch'
-interface TwoParamsRequest {
-  <T, D = any>(url: string, config?: AxiosRequestConfig<D>): Promise<T>
-}
-interface ThreeParamsRequest {
-  <T, D = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<T>
-}
-export type InnerAxiosInstance = Omit<AxiosInstance, 'request' | TwoParamsMethod | ThreeParamsMethod> & {
-  request<T = any, D = any>(config: AxiosRequestConfig<D>): Promise<T>
-} & {
-  [K in TwoParamsMethod]: TwoParamsRequest
-} & {
-  [K in ThreeParamsMethod]: ThreeParamsRequest
-}
-
-export class Bot {
-  public $request: InnerAxiosInstance
+export class Bot extends Api {
   public send: Sender
-  private readonly host: string
-  private readonly token: string
   private client = new WebSocketClient()
   private events = new Events()
 
@@ -39,56 +16,11 @@ export class Bot {
   constructor(
     private options: Bot.Options
   ) {
+    super(options.host, `Bot ${ options.app.id }.${ options.app.token }`, options.env === 'sandbox')
     this.options = options
-    this.host = options.host || 'https://api.sgroup.qq.com/'
-    if (options.env === 'sandbox')
-      this.host = this.host.replace(/^(https?:\/\/)/, '$1sandbox.')
-    this.token = `Bot ${ this.options.app.id }.${ this.options.app.token }`
-
-    this.$request = this.getRequest() as InnerAxiosInstance
     this.send = createSender(this.$request)
-  }
 
-  private getRequest() {
-    const a = axios.create({
-      baseURL: this.host,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': this.token
-      }
-    })
-    a.interceptors.request.use(
-      (config: AxiosRequestConfig) => config,
-      (error: any) => Promise.reject(error)
-    )
-    a.interceptors.response.use((response: AxiosResponse) => {
-      return camelCaseObjKeys(response.data)
-    }, async (error: AxiosError<{}>) => {
-      const response = error?.response
-      switch (response?.status) {
-        case 401:
-        case 403:
-          break
-      }
-      throw error
-    })
-    return a
-  }
-
-  get guilds() {
-    return this.$request.get<Guild[]>('/users/@me/guilds')
-  }
-
-  guild(id: string) {
-    return this.$request.get<Guild>(`/guilds/${ id }`)
-  }
-
-  channels(id: string) {
-    return this.$request.get<Channel[]>(`/guilds/${ id }/channels`)
-  }
-
-  channel(id: string) {
-    return this.$request.get<Channel>(`/channels/${ id }`)
+    return attachApi(this)
   }
 
   async startClient(intents: Bot.Intents | number): Promise<void> {
@@ -148,9 +80,6 @@ export class Bot {
         reject(error)
       })
     })
-  }
-
-  async stopClient() {
   }
 }
 
