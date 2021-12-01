@@ -16,7 +16,8 @@
   "homepage": "https://github.com/NWYLZW/qq-guild-sdk",
   "scripts": {
     "build": "ts-node esbuild.ts && yarn build:dts",
-    "build:dts": "tsc -p tsconfig.dts.json"
+    "build:dts": "tsc -p tsconfig.dts.json",
+    "test": "mocha"
   },
   "dependencies": {
     "axios": "^0.24.0",

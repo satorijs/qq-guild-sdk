@@ -14,7 +14,8 @@
     "main": "yarn workspace qq-guild-sdk",
     "docs:dev": "yarn docs dev",
     "build": "yarn core build && yarn main build && yarn docs build",
-    "lint": "eslint packages/{core,qq-guild-sdk}/src/**/*.ts"
+    "lint": "eslint packages/{core,qq-guild-sdk}/src/**/*.ts",
+    "test": "yarn core test"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^15.0.0",
