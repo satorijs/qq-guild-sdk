@@ -1,4 +1,6 @@
 import { User } from './common'
+import { InnerAxiosInstance } from './bot'
+import { isString } from './utils'
 
 export interface Message {
   /** 消息 id */
@@ -81,14 +83,73 @@ interface SenderDefault<Type extends Sender.TargetType | undefined = undefined> 
  * sender.channel(['channelId0', 'channelId1'], 'message')
  * ```
  */
-export type Sender<Type extends Sender.TargetType | undefined = undefined> = SenderDefault<Type> & Type extends undefined
-  ? {
-    [K in Sender.TargetType]: SenderDefault<K>
-  } : {}
+export interface Sender<Type extends Sender.TargetType | undefined = undefined> extends SenderDefault<Type> {
+  private: SenderDefault<'private'>
+  channel: SenderDefault<'channel'>
+}
+
+const resolveTarget = (target: Sender.Target | Sender.Target[], type?: Sender.TargetType) => {
+  if (Array.isArray(target)) {
+    target.forEach(item => resolveTarget(item, type))
+  } else {
+    if (target.ids && target.id)
+      target.ids.push(target.id)
+
+    if (!target.ids && !target.id)
+      throw new Error('target.ids or target.id is required')
+  }
+}
+
+const resolveRequest = (req: string | Message.Request) => {
+  if (isString(req)) {
+    return { content: req }
+  } else {
+    return req
+  }
+}
+
+export const createSender = (axiosInstance: InnerAxiosInstance, type?: Sender.TargetType): Sender => {
+  const send = (target: Sender.Target, req: Message.Request) => {
+    switch (target.type) {
+      case 'channel':
+        if (target.ids) {
+          return target.ids.map(id => axiosInstance.post<Message.Response>(`/channels/${ id }/messages`, req))
+        } else {
+          return axiosInstance.post<Message.Response>(`/channels/${ target.id }/messages`, req)
+        }
+      default:
+        throw new Error(`target.type ${ target.type } is not supported`)
+    }
+  }
+  const sender = ((target, req: Message.Request) => {
+    resolveTarget(target, type)
+    req = resolveRequest(req)
+    if (Array.isArray(target)) {
+      const sendList: Promise<Message.Response>[] = []
+      target.forEach(t => {
+        const p = send(t, req)
+        Array.isArray(p) ? sendList.push(...p) : sendList.push(p)
+      })
+      return Promise.all(sendList)
+    } else {
+      return send(target, req)
+    }
+  }) as SenderDefault
+  sender.reply = (t, msgId, req) => sender(t, { ...resolveRequest(req), msgId })
+  return new Proxy(sender, {
+    get (target, prop) {
+      if (prop === 'reply') {
+        return target[prop]
+      } else {
+        return createSender(axiosInstance, prop as Sender.TargetType)
+      }
+    }
+  }) as any as Sender
+}
 
 export namespace Sender {
   export type TargetType = 'private' | 'channel'
   export type Target<T = undefined> = T extends undefined
-    ? ({ id: string } | { ids: string[] }) & { type: TargetType }
+    ? { type: TargetType; id?: string; ids?: string[] }
     : string
 }
