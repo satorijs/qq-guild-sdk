@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { camelCaseObjKeys, pluralize } from './utils'
-import { Guild, Member, Role } from './common'
+import { Channel, Guild, Member, Role } from './common'
 
 type TwoParamsMethod = 'get' | 'delete' | 'head' | 'options'
 type ThreeParamsMethod = 'post' | 'put' | 'patch'
@@ -50,7 +50,9 @@ export interface Api {
     member(id: string): Promise<Member> & {
       role(id: string): Promise<Role>
     }
+    get channels(): Promise<Channel[]>
   }
+  channel(id: string): Promise<Channel>
 }
 
 export class Api {

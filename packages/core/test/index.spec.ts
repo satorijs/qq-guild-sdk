@@ -33,7 +33,7 @@ describe('Bot', function () {
 
   it('should get channels and channel for target id.', async () => {
     const guilds = await bot.guilds
-    const channels = await bot.channels(guilds[0].id)
+    const channels = await bot.guild(guilds[0].id).channels
     expect(channels).to.be.an('array')
     expect(channels[0]).to.be.an('object')
   })
