@@ -1,8 +1,8 @@
 import { client as WebSocketClient } from 'websocket'
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
-import { Message, Sender } from './sender'
+import { createSender, Message, Sender } from './sender'
 import { camelCaseObjKeys, snakeCaseObjKeys } from './utils'
-import { Guild, User } from './common'
+import { Channel, Guild, User } from './common'
 import { Events } from './events'
 
 export interface Bot {
@@ -17,7 +17,7 @@ interface TwoParamsRequest {
 interface ThreeParamsRequest {
   <T, D = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<T>
 }
-type InnerAxiosInstance = Omit<AxiosInstance, 'request' | TwoParamsMethod | ThreeParamsMethod> & {
+export type InnerAxiosInstance = Omit<AxiosInstance, 'request' | TwoParamsMethod | ThreeParamsMethod> & {
   request<T = any, D = any>(config: AxiosRequestConfig<D>): Promise<T>
 } & {
   [K in TwoParamsMethod]: TwoParamsRequest
@@ -27,6 +27,7 @@ type InnerAxiosInstance = Omit<AxiosInstance, 'request' | TwoParamsMethod | Thre
 
 export class Bot {
   public $request: InnerAxiosInstance
+  public send: Sender
   private readonly host: string
   private readonly token: string
   private client = new WebSocketClient()
@@ -45,6 +46,7 @@ export class Bot {
     this.token = `Bot ${ this.options.app.id }.${ this.options.app.token }`
 
     this.$request = this.getRequest() as InnerAxiosInstance
+    this.send = createSender(this.$request)
   }
 
   private getRequest() {
@@ -79,6 +81,14 @@ export class Bot {
 
   guild(id: string) {
     return this.$request.get<Guild>(`/guilds/${ id }`)
+  }
+
+  channels(id: string) {
+    return this.$request.get<Channel[]>(`/guilds/${ id }/channels`)
+  }
+
+  channel(id: string) {
+    return this.$request.get<Channel>(`/channels/${ id }`)
   }
 
   async startClient(intents: Bot.Intents | number): Promise<void> {
