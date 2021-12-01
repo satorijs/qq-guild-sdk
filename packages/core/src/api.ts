@@ -18,12 +18,34 @@ export type InnerAxiosInstance = Omit<AxiosInstance, 'request' | TwoParamsMethod
   [K in ThreeParamsMethod]: ThreeParamsRequest
 }
 
+type D<T> = {
+  info: T
+  filter: { [K in keyof T]?: boolean }
+}
+
 export interface Api {
   /**
    * get property will travel `/users/@me/propertyName`
    */
   get guilds(): Promise<Guild[]>
   guild(id: string): Promise<Guild> & {
+    get roles(): Promise<{
+      roles: Role[]
+      guildId: string
+      /** 默认分组上限 */
+      roleNumLimit: number
+    }> & {
+      add(d: D<Pick<Role, 'name' | 'color' | 'hoist'>>): Promise<{roleId: string; role: Role}>
+    }
+    role(id: string): {
+      del(): Promise<void>
+
+      upd(d: D<Partial<Pick<Role, 'name' | 'color' | 'hoist'>>>): Promise<{
+        role: Role
+        roleId: string
+        guildId: string
+      }>
+    }
     get members(): Promise<Member[]>
     member(id: string): Promise<Member> & {
       role(id: string): Promise<Role>
@@ -81,8 +103,17 @@ const requestProxy = (a: Api, path: string, cPath = ''): Function => new Proxy((
     if (promiseMethods.includes(prop))
       return getPromiseProp(
         a.$request.get(path + cPath), prop as promiseMethod)
-    else
+    else {
+      switch (prop as 'add' | 'del' | 'upd') {
+        case 'add':
+          return (d: any) => a.$request.post(path + cPath, d)
+        case 'del':
+          return () => a.$request.delete(path + cPath)
+        case 'upd':
+          return (d: any) => a.$request.patch(path + cPath, d)
+      }
       return requestProxy(a, path, `/${prop}`)
+    }
   },
   apply(_, __, [id, ..._args]) {
     return requestProxy(a, `${path + pluralize(cPath)}/${id}`)

@@ -54,4 +54,36 @@ describe('Api', function () {
     // /guild/:guildId/members/:memberId/roles/:roleId
     expect(await foo.guild(guildId).member(memberId).role(roleId)).to.equal('test await foo.guild(\'123\').members(\'456\').roles(\'789\')')
   })
+
+  it('should travel other method request.', async () => {
+    const reqAdd = {
+      info: {
+        name: '', color: 0, hoist: 0
+      },
+      filter: { name: true }
+    }
+    const guildId = '123', roleId = '789'
+    new MockAdapter(foo.$request as AxiosInstance).onPost(
+      `/guilds/${ guildId }/roles`, reqAdd
+    ).replyOnce(
+      200, 'p test await foo.guild(\'123\').roles'
+    ).onDelete(
+      `/guilds/${ guildId }/roles/${ roleId }`
+    ).replyOnce(
+      200, 'd test await foo.guild(\'123\').roles'
+    ).onPatch(
+      `/guilds/${ guildId }/roles/${ roleId }`, reqAdd
+    ).replyOnce(
+      200, 'p test await foo.guild(\'123\').roles'
+    )
+    // [post] /guild/:guildId/roles
+    expect(await foo.guild(guildId).roles.add(reqAdd))
+      .to.equal('p test await foo.guild(\'123\').roles')
+    // [delete] /guild/:guildId/roles/:roleId
+    expect(await foo.guild(guildId).role(roleId).del())
+      .to.equal('d test await foo.guild(\'123\').roles')
+    // [patch] /guild/:guildId/roles/:roleId
+    expect(await foo.guild(guildId).role(roleId).upd(reqAdd))
+      .to.equal('p test await foo.guild(\'123\').roles')
+  })
 })
