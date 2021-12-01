@@ -64,6 +64,10 @@ namespace Utils {
 
   export const snakeCaseObjKeys = doAllKeys(snakeCase as (string?: string) => string) as <T>(o: {}) => T
   export const camelCaseObjKeys = doAllKeys(camelCase as (string?: string) => string) as <T>(o: {}) => T
+
+  export function pluralize(word: string) {
+    return word + 's'
+  }
 }
 
 export = Utils
