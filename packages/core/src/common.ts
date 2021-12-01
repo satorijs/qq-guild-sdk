@@ -5,6 +5,43 @@ export interface User {
   bot: boolean
 }
 
+export interface Role {
+  /** 身份组 ID , 默认值可参考 DefaultRoles */
+  id: string
+  /** 名称 */
+  name: string
+  /** ARGB 的 HEX 十六进制颜色值转换后的十进制数值 */
+  color: number
+  /** 是否在成员列表中单独展示: 0-否, 1-是 */
+  hoist: number
+  /** 人数 */
+  number: number
+  /** 成员上限 */
+  memberLimit: number
+}
+
+export enum DefaultRoles {
+  /** 全体成员 */
+  ALL = 1,
+  /** 管理员 */
+  ADMIN = 2,
+  /** 群主/创建者 */
+  OWNER = 4,
+  /** 子频道管理员 */
+  SUBCHANNEL_ADMIN = 5
+}
+
+export interface Member {
+  /** 用户基础信息，来自QQ资料，只有成员相关接口中会填充此信息 */
+  user: User
+  /** 用户在频道内的昵称 */
+  nick: string
+  /** 用户在频道内的身份组ID, 默认值可参考DefaultRoles */
+  roles: string[]
+  /** 用户加入频道的时间 */
+  joinedAt: Date
+}
+
 export interface Guild {
   id: string
   name: string
@@ -41,6 +78,15 @@ export enum ChannelSubType {
   STRATEGY = 2,
   /** 开黑 */
   BLACK = 3
+}
+
+export interface ChannelPermissions {
+  /** 子频道 id */
+  channelId: string
+  /** 用户 id */
+  userId: string
+  /** 用户拥有的子频道权限 */
+  permissions: string
 }
 
 export interface Channel {
