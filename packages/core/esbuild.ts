@@ -5,7 +5,8 @@ const options = {
   minify: process.env.NODE_ENV === 'production',
   bundle: true,
   target: 'node10',
-  sourcemap: 'external'
+  sourcemap: 'external',
+  external: [ 'axios', 'websocket' ]
 } as BuildOptions
 
 Promise.all([
