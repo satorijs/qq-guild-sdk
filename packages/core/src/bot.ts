@@ -51,6 +51,7 @@ export class Bot extends Api {
                     sessionId = payload.d.sessionId
                     this.emit('ready')
                     break
+                  case 'MESSAGE_CREATE':
                   case 'AT_MESSAGE_CREATE':
                     this.emit('message', payload.d)
                     break
@@ -145,7 +146,7 @@ export namespace Bot {
   } | {
     op: Opcode.DISPATCH
     s: number
-    t: 'AT_MESSAGE_CREATE'
+    t: 'MESSAGE_CREATE' | 'AT_MESSAGE_CREATE'
     d: Message
   }
 
