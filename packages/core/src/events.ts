@@ -25,7 +25,7 @@ export class Events {
 
 export namespace Events {
   export interface Map {
-    'ready': () => void
-    'message': (msg: Message) => string | void
+    'ready': () => Promise<void>
+    'message': (msg: Message) => Promise<string | void>
   }
 }

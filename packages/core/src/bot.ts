@@ -102,6 +102,7 @@ export namespace Bot {
   export enum Intents {
     GUILDS = 1 << 0,
     GUILD_MEMBERS = 1 << 1,
+    MESSAGE = 1 << 9,
     DIRECT_MESSAGES = 1 << 12,
     AUDIO_ACTION = 1 << 29,
     AT_MESSAGE = 1 << 30
