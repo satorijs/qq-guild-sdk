@@ -15,7 +15,7 @@ npm install qq-guild-sdk@core
 ```js
 import { Bot } from 'qq-guild-sdk@core'
 // or
-const { Bot } = require('qq-guild-sdk@core/bot')
+const { Bot } = require('qq-guild-sdk@core')
 
 // 创建 bot
 const bot = new Bot({
