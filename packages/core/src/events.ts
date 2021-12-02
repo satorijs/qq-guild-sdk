@@ -24,8 +24,10 @@ export class Events {
 }
 
 export namespace Events {
+  type Awaitable<T> = [T] extends [Promise<unknown>] ? T : T | Promise<T>
+
   export interface Map {
-    'ready': () => Promise<void>
-    'message': (msg: Message) => Promise<string | void>
+    'ready': () => Awaitable<void>
+    'message': (msg: Message) => Awaitable<string | void>
   }
 }
