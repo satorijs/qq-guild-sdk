@@ -1,5 +1,5 @@
 import { User } from './common'
-import { isString } from './utils'
+import { isArray, isString } from './utils'
 import { InnerAxiosInstance } from './api'
 
 export interface Message {
@@ -67,7 +67,7 @@ export namespace Message {
   }
 }
 
-interface SenderDefault<Type extends Sender.TargetType | undefined = undefined> {
+interface AbsSender<Type extends Sender.TargetType | undefined = undefined> {
   <T extends Sender.Target<Type> | Sender.Target<Type>[], R extends string | Message.Request>(
     target: T, req: R
   ): Promise<T extends Sender.Target<Type>[] ? Message.Response[] : Message.Response>
@@ -83,31 +83,34 @@ interface SenderDefault<Type extends Sender.TargetType | undefined = undefined> 
  * sender.channel(['channelId0', 'channelId1'], 'message')
  * ```
  */
-export interface Sender<Type extends Sender.TargetType | undefined = undefined> extends SenderDefault<Type> {
-  private: SenderDefault<'private'>
-  channel: SenderDefault<'channel'>
+export interface Sender<Type extends Sender.TargetType | undefined = undefined> extends AbsSender<Type> {
+  private: AbsSender<'private'>
+  channel: AbsSender<'channel'>
 }
 
-export const resolveTarget = <
-  Type extends Sender.TargetType | undefined, T extends Sender.Target<Type> | Sender.Target<Type>[]
->(target: T, type?: Type): T => {
-  if (Array.isArray(target)) {
-    // @ts-ignore
-    return target.map(item => resolveTarget(item, type))
-  } else {
-    if (typeof target === 'string') {
-      if (!type)
-        throw new Error('type is required when target is string')
+type resolveTargetResult<T> = T extends string ? Sender.Target : T
 
-      // @ts-ignore
-      return { type, id: target }
+export const resolveTarget = <
+  T extends Sender.Target | string, Target extends T | T[]>(
+  target: Target, type?: Sender.TargetType
+): resolveTargetResult<typeof target> => {
+  if (isArray(target))
+    // @ts-ignore
+    return target.map(resolveTarget)
+  if (isString(target)) {
+    if (!type)
+      throw new Error('type is required')
+
+    return <resolveTargetResult<Target>> {
+      type, id: target
     }
+  } else {
     if (target.ids && target.id)
       target.ids.push(target.id)
 
     if (!target.ids && !target.id)
       throw new Error('target.ids or target.id is required')
-    return target
+    return <resolveTargetResult<Target>> target
   }
 }
 
@@ -135,21 +138,19 @@ export const createSender = <Type extends Sender.TargetType | undefined = undefi
     }
   }
   const sender = ((target, req: Message.Request) => {
-    target = resolveTarget(target, type)
+    const targets = resolveTarget(target, type)
     req = resolveRequest(req)
-    if (Array.isArray(target)) {
+    if (Array.isArray(targets)) {
       const sendList: Promise<Message.Response>[] = []
-      target.forEach(t => {
-        // @ts-ignore
-        const p = send(t, req)
+      targets.forEach(t => {
+        const p = send(t as Sender.Target, req)
         Array.isArray(p) ? sendList.push(...p) : sendList.push(p)
       })
       return Promise.all(sendList)
     } else {
-      // @ts-ignore
-      return send(target, req)
+      return send(targets, req)
     }
-  }) as SenderDefault<Type>
+  }) as AbsSender<Type>
   sender.reply = (t, msgId, req) => sender(t, { ...resolveRequest(req), msgId })
   return new Proxy(sender, {
     get (target, prop) {
