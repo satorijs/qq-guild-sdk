@@ -88,15 +88,26 @@ export interface Sender<Type extends Sender.TargetType | undefined = undefined> 
   channel: SenderDefault<'channel'>
 }
 
-const resolveTarget = (target: Sender.Target | Sender.Target[], type?: Sender.TargetType) => {
+export const resolveTarget = <
+  Type extends Sender.TargetType | undefined, T extends Sender.Target<Type> | Sender.Target<Type>[]
+>(target: T, type?: Type): T => {
   if (Array.isArray(target)) {
-    target.forEach(item => resolveTarget(item, type))
+    // @ts-ignore
+    return target.map(item => resolveTarget(item, type))
   } else {
+    if (typeof target === 'string') {
+      if (!type)
+        throw new Error('type is required when target is string')
+
+      // @ts-ignore
+      return { type, id: target }
+    }
     if (target.ids && target.id)
       target.ids.push(target.id)
 
     if (!target.ids && !target.id)
       throw new Error('target.ids or target.id is required')
+    return target
   }
 }
 
@@ -108,7 +119,9 @@ const resolveRequest = (req: string | Message.Request) => {
   }
 }
 
-export const createSender = (axiosInstance: InnerAxiosInstance, type?: Sender.TargetType): Sender => {
+export const createSender = <Type extends Sender.TargetType | undefined = undefined>(
+  axiosInstance: InnerAxiosInstance, type?: Type
+): Sender => {
   const send = (target: Sender.Target, req: Message.Request) => {
     switch (target.type) {
       case 'channel':
@@ -122,19 +135,21 @@ export const createSender = (axiosInstance: InnerAxiosInstance, type?: Sender.Ta
     }
   }
   const sender = ((target, req: Message.Request) => {
-    resolveTarget(target, type)
+    target = resolveTarget(target, type)
     req = resolveRequest(req)
     if (Array.isArray(target)) {
       const sendList: Promise<Message.Response>[] = []
       target.forEach(t => {
+        // @ts-ignore
         const p = send(t, req)
         Array.isArray(p) ? sendList.push(...p) : sendList.push(p)
       })
       return Promise.all(sendList)
     } else {
+      // @ts-ignore
       return send(target, req)
     }
-  }) as SenderDefault
+  }) as SenderDefault<Type>
   sender.reply = (t, msgId, req) => sender(t, { ...resolveRequest(req), msgId })
   return new Proxy(sender, {
     get (target, prop) {
