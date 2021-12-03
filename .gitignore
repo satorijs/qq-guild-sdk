@@ -5,7 +5,7 @@ temp
 .cache
 .env
 
-test
+tests
 
 yarn.lock
 node_modules/
