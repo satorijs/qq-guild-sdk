@@ -49,7 +49,7 @@ const bot = new Bot({
 
 * 自适应扩展请求 api ，只需要扩展接口即可
 ```ts
-declare module 'qq-guild-sdk@core' {
+declare module '@qq-guild-sdk/core' {
   interface Api {
     newApi(id: string): Promise<Entity>
   }
