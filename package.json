@@ -13,7 +13,7 @@
     "core": "yarn workspace @qq-guild-sdk/core",
     "main": "yarn workspace qq-guild-sdk",
     "docs:dev": "yarn docs dev",
-    "build": "yarn core build && yarn main build && yarn docs build",
+    "build": "yarn core build && yarn main build",
     "lint": "eslint packages/{core,qq-guild-sdk}/src/**/*.ts",
     "test": "yarn core test"
   },
