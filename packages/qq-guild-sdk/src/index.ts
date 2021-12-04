@@ -7,3 +7,4 @@ const defaultOptions: Options = {
 }
 
 export const createBot = (options: Bot.Options) => new Bot(merge(defaultOptions, options))
+export * from '@qq-guild-sdk/core'
