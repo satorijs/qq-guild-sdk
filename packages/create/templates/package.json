@@ -1,0 +1,14 @@
+{
+  "name": "",
+  "version": "0.1.0",
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "scripts": {
+    "start": ""
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}

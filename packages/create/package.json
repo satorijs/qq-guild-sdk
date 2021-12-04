@@ -1,0 +1,30 @@
+{
+  "name": "create-qq-guild-bot",
+  "version": "1.0.0",
+  "description": "qq guild sdk create",
+  "author": "yijie",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NWYLZW/qq-guild-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/NWYLZW/qq-guild-sdk/issues"
+  },
+  "homepage": "https://github.com/NWYLZW/qq-guild-sdk",
+  "bin": "dist/index.js",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "rimraf ignore-bot && ts-node src/index.ts ignore-bot",
+    "pro": "yarn create-qq-guild-bot ignore-bot",
+    "build": "ts-node esbuild.ts"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^8.1.3",
+    "esbuild": "^0.14.0",
+    "rimraf": "^3.0.2"
+  },
+  "dependencies": {
+    "inquirer": "^8.2.0"
+  }
+}
