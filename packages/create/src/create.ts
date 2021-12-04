@@ -28,7 +28,7 @@ export default (botName: string, options: Options) => {
     }[options.language] }node ${ pkg.main }`
   }
   pkg.dependencies = {
-    'qq-guild-sdk': '^1.0.1'
+    'qq-guild-sdk': '^1.0.2'
   }
   pkg.devDependencies = {
   }
