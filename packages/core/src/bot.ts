@@ -61,10 +61,7 @@ export class Bot extends Api {
             }
           }
         })
-        connection.on('error', error => {
-          console.error(error)
-          reject(error)
-        })
+        connection.on('error', reject)
         connection.on('close', (code: number, desc: string) => {
           console.warn(code, desc)
           const p = {
@@ -77,9 +74,7 @@ export class Bot extends Api {
           connection.send(JSON.stringify(snakeCaseObjKeys(p)))
         })
       })
-      this.client.on('connectFailed', error => {
-        reject(error)
-      })
+      this.client.on('connectFailed', reject)
     })
   }
 }
