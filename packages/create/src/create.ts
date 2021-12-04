@@ -25,7 +25,7 @@ export default (botName: string, options: Options) => {
     start: `${ {
       'TypeScript': 'ts-',
       'JavaScript': ''
-    }[options.language] }node ${ pkg.main }`
+    }[options.language] }node -r dotenv/config ${ pkg.main }`
   }
   pkg.dependencies = {
     'qq-guild-sdk': '^1.0.2'
