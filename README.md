@@ -1,23 +1,9 @@
 # QQ Guild Sdk
 
-## how to use?
+<p align="center">
+  <img width="100" src="./docs/.vuepress/public/qq-guild-sdk.png" alt="Shortln logo">
+</p>
 
-```js
-import { createBot } from 'qq-guild-sdk'
+基于 qq 频道官方 api 开发，运行于 Node.js 平台，支持 qq 频道官方 api 的所有接口，支持自定义接口。
 
-const bot = createBot({
-  app: {
-    id: '你在平台注册的机器人 appid',
-    key: '你在平台注册的机器人 appkey',
-    token: '你在平台注册的机器人 token',
-  }
-})
-
-// 监听服务端的消息
-bot.on('message', message => {
-  console.log(message)
-})
-
-// 发送频道消息
-bot.send.channel('目标频道 id', 'hello qq guild.')
-```
+[使用文档](https://nwylzw.github.com/qq-guild-sdk)
