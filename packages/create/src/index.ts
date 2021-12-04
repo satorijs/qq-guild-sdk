@@ -7,6 +7,8 @@ const [ botName, projectDir ] = process.argv.slice(2)
 
 async function main() {
   process.chdir(resolve(process.cwd(), projectDir || ''))
+  console.log('If you not register your bot, you can register in: https://bot.q.qq.com/open/#/type')
+  console.log('You need bot id, secret key and token, you can get it in: https://bot.q.qq.com/#/developer/developer-setting')
   create(botName, await inquirer.prompt([{
     type: 'input',
     name: 'botName',
@@ -15,6 +17,36 @@ async function main() {
     validate: (input: string) => {
       if (!input) {
         return 'Please enter a name for your bot'
+      }
+      return true
+    }
+  }, {
+    type: 'input',
+    name: 'appId',
+    message: 'What is your app id?',
+    validate: (input: string) => {
+      if (!input) {
+        return 'Please enter your app id'
+      }
+      return true
+    }
+  }, {
+    type: 'input',
+    name: 'appKey',
+    message: 'What is your app key(secret)?',
+    validate: (input: string) => {
+      if (!input) {
+        return 'Please enter your app key'
+      }
+      return true
+    }
+  }, {
+    type: 'input',
+    name: 'appToken',
+    message: 'What is your app token?',
+    validate: (input: string) => {
+      if (!input) {
+        return 'Please enter your app token'
       }
       return true
     }

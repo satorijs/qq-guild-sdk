@@ -8,6 +8,9 @@ interface Options {
   language: 'JavaScript' | 'TypeScript'
   git: boolean
   packageManager: 'npm' | 'yarn'
+  appId: string
+  appKey: string
+  appToken: string
 }
 
 export default (botName: string, options: Options) => {
@@ -34,8 +37,8 @@ export default (botName: string, options: Options) => {
   }
   switch (options.language) {
     case 'JavaScript':
-      pkg.devDependencies = {
-      }
+      pkg.devDependencies = Object.assign(pkg.devDependencies, {
+      })
       break
     case 'TypeScript':
       pkg.devDependencies = Object.assign(pkg.devDependencies, {
@@ -55,6 +58,11 @@ export default (botName: string, options: Options) => {
         'JavaScript': [ 'js', 'jsx' ],
         'TypeScript': [ 'ts', 'tsx' ]
       }[options.language].join(',')}}`
+    },
+    '.env': {
+      id: options.appId,
+      key: options.appKey,
+      token: options.appToken
     }
   }
 
