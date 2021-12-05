@@ -95,7 +95,7 @@ main().catch(err => {
 })
 ```
 
-### 常见问题
+## 常见问题
 
 * Q: 如何创建官方机器人?
 * A: 使用该 [官方网站](https://bot.q.qq.com/open/#/type?appType=2) 注册。
