@@ -1,4 +1,4 @@
-import { Bot, resolveTarget } from '@qq-guild-sdk/core'
+import { Api, createSender, resolveTarget } from '@qq-guild-sdk/core'
 import MockAdapter from 'axios-mock-adapter'
 import { AxiosInstance } from 'axios'
 import { expect } from 'chai'
@@ -8,9 +8,8 @@ after(() => {
 })
 
 describe('Sender', function () {
-  const bot = new Bot({
-    app: { id: '', key: '', token: '' }
-  })
+  const $request = new Api(undefined, '', false).$request
+  const sender = createSender($request)
 
   it('should test resolve target function.', () => {
     expect(() => resolveTarget({ type: 'private' }))
@@ -27,13 +26,13 @@ describe('Sender', function () {
 
   it('should travel to right path.', async () => {
     const channelId = '123'
-    new MockAdapter(bot.$request as AxiosInstance).onPost(
+    new MockAdapter($request as AxiosInstance).onPost(
       `/channels/${ channelId }/messages`
     ).replyOnce(
       200, 'send message'
     )
 
-    expect(await bot.send.channel(channelId, ''))
+    expect(await sender.channel(channelId, ''))
       .to.be.equal('send message')
   })
 })
