@@ -16,7 +16,7 @@ export class Bot extends Api {
   constructor(
     private options: Bot.Options
   ) {
-    super(options.host, `Bot ${ options.app.id }.${ options.app.token }`, options.env === 'sandbox')
+    super(options.endpoint, `Bot ${ options.app.id }.${ options.app.token }`, options.sandbox)
     this.options = options
     this.send = createSender(this.$request)
 
@@ -89,8 +89,8 @@ export namespace Bot {
   export interface Options {
     app: AppConfig
     /** 目前还不支持 sandbox 环境，请勿使用。 */
-    env?: 'production' | 'sandbox'
-    host?: string
+    sandbox: boolean
+    endpoint?: string
     /** 目前还不支持 bearer 验证方式。 */
     authType?: 'bot' | 'bearer'
   }

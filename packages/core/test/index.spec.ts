@@ -17,11 +17,7 @@ after(() => {
 
 describe('Bot', function () {
   const bot = new Bot({
-    app: {
-      id: process.env.id,
-      key: process.env.key,
-      token: process.env.token
-    }
+    sandbox: true, app: process.env
   })
 
   it('should get guilds and guild for target id.', async () => {
