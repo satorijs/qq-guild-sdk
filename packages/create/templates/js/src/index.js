@@ -1,11 +1,7 @@
 import { createBot, Bot } from 'qq-guild-sdk'
 
 const bot = createBot({
-  app: {
-    id: process.env.id,
-    key: process.env.key,
-    token: process.env.token
-  }
+  app: process.env
 })
 
 async function main() {

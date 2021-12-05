@@ -11,11 +11,7 @@ declare global {
 }
 
 const bot = createBot({
-  app: {
-    id: process.env.id,
-    key: process.env.key,
-    token: process.env.token
-  }
+  app: process.env
 })
 
 async function main() {
