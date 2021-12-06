@@ -1,6 +1,6 @@
 {
   "name": "qq-guild-sdk",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "qq guild sdk",
   "main": "dist/index.cjs",
   "types": "dist/index.d.ts",
@@ -22,7 +22,7 @@
   "dependencies": {
     "dotenv": "^10.0.0",
     "lodash.merge": "^4.6.2",
-    "@qq-guild-sdk/core": "^1.1.0"
+    "@qq-guild-sdk/core": "^1.1.1"
   },
   "devDependencies": {
     "@types/lodash.merge": "^4.6.6",
