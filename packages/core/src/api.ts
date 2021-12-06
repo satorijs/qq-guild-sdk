@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
-import { camelCaseObjKeys, pluralize } from './utils'
-import { Channel, Guild, Member, Role } from './common'
+import { camelCaseObjKeys, pluralize, snakeCase } from './utils'
+import { Channel, Guild, Member, Role, User } from './common'
 
 type TwoParamsMethod = 'get' | 'delete' | 'head' | 'options'
 type ThreeParamsMethod = 'post' | 'put' | 'patch'
@@ -77,7 +77,9 @@ export class Api {
       }
     })
     a.interceptors.request.use(
-      (config: AxiosRequestConfig) => config,
+      (config: AxiosRequestConfig) => {
+        config.data && (config.data = snakeCase(config.data))
+      },
       (error: any) => Promise.reject(error)
     )
     a.interceptors.response.use((response: AxiosResponse) => {
@@ -92,6 +94,10 @@ export class Api {
       throw error
     })
     return a
+  }
+
+  get me() {
+    return this.$request.get<User>('/users/@me')
   }
 }
 
