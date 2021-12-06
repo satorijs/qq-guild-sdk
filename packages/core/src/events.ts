@@ -28,6 +28,7 @@ export namespace Events {
 
   export interface Map {
     'ready': () => Awaitable<void>
+    'error': (error: Error) => Awaitable<void>
     'message': (msg: Message) => Awaitable<string | void>
   }
 }
