@@ -23,10 +23,7 @@ export class Events {
         try {
           await listeners[i](...args)
         } catch (e) {
-          if (e instanceof Error)
-            this.emit('error', e)
-          else
-            throw e
+          throw e
         }
       }
     }
