@@ -72,7 +72,7 @@ interface AbsSender<Type extends Sender.TargetType | undefined = undefined> {
     target: T, req: R
   ): Promise<T extends Sender.Target<Type>[] ? Message.Response[] : Message.Response>
   reply: <T extends Sender.Target<Type>, R extends string | Message.Request>(
-    target: T, msgId: string, req: R extends string ? R : Omit<R, 'msgId'>
+    msgId: string, target: T, req: R extends string ? R : Omit<R, 'msgId'>
   ) => Promise<Message.Response>
 }
 
@@ -151,7 +151,7 @@ export const createSender = <Type extends Sender.TargetType | undefined = undefi
       return send(targets, req)
     }
   }) as AbsSender<Type>
-  sender.reply = (t, msgId, req) => sender(t, { ...resolveRequest(req), msgId })
+  sender.reply = (msgId, t, req) => sender(t, { ...resolveRequest(req), msgId })
   return new Proxy(sender, {
     get (target, prop) {
       if (prop === 'reply') {
