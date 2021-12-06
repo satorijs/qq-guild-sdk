@@ -79,6 +79,7 @@ export class Api {
     a.interceptors.request.use(
       (config: AxiosRequestConfig) => {
         config.data && (config.data = snakeCase(config.data))
+        return config
       },
       (error: any) => Promise.reject(error)
     )
