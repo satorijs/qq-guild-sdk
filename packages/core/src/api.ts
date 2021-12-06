@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
-import { camelCaseObjKeys, pluralize, snakeCase } from './utils'
+import { camelCaseObjKeys, snakeCaseObjKeys, pluralize } from './utils'
 import { Channel, Guild, Member, Role, User } from './common'
 
 type TwoParamsMethod = 'get' | 'delete' | 'head' | 'options'
@@ -60,9 +60,9 @@ export class Api {
   readonly token: string
   $request: InnerAxiosInstance
 
-  constructor(host: string | undefined, token: string, isSandbox: boolean) {
+  constructor(host: string, token: string, isSandbox: boolean) {
+    this.host = host
     this.token = token
-    this.host = host || 'https://api.sgroup.qq.com/'
     if (isSandbox)
       this.host = this.host.replace(/^(https?:\/\/)/, '$1sandbox.')
     this.$request = this.getRequest()
@@ -78,7 +78,7 @@ export class Api {
     })
     a.interceptors.request.use(
       (config: AxiosRequestConfig) => {
-        config.data && (config.data = snakeCase(config.data))
+        config.data && (config.data = snakeCaseObjKeys(config.data))
         return config
       },
       (error: any) => Promise.reject(error)
