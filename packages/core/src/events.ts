@@ -9,16 +9,26 @@ export class Events {
     this.listeners = {}
   }
 
-  public on<T extends keyof Events.Map>(event: T, listener: Events.Map[T]): void {
+  on<T extends keyof Events.Map>(event: T, listener: Events.Map[T]): void {
     this.listeners[event] = this.listeners[event] || []
     this.listeners[event].push(listener)
   }
 
-  public emit<T extends keyof Events.Map>(
+  async emit<T extends keyof Events.Map>(
     event: T, ...args: Parameters<Events.Map[T]>
-  ): void {
-    if (this.listeners[event]) {
-      this.listeners[event].forEach(listener => listener(...args))
+  ): Promise<void> {
+    const listeners = this.listeners[event]
+    if (listeners) {
+      for (let i = 0; i < listeners.length; i++) {
+        try {
+          await listeners[i](...args)
+        } catch (e) {
+          if (e instanceof Error)
+            this.emit('error', e)
+          else
+            throw e
+        }
+      }
     }
   }
 }
