@@ -1,78 +1,137 @@
-import { client as WebSocketClient } from 'websocket'
+import { client as WebSocketClient, connection } from 'websocket'
 import { createSender, Message, Sender } from './sender'
 import { camelCaseObjKeys, snakeCaseObjKeys } from './utils'
 import { User } from './common'
 import { Events } from './events'
 import { Api, attachApi } from './api'
 
+function genToken(type: Bot.Options['authType'], app: Bot.AppConfig) {
+  switch (type) {
+    case 'bot':
+      return `Bot ${ app.id }.${ app.token }`
+    case 'bearer':
+      // return `Bearer ${ }`
+      throw new Error('Unsupported auth type')
+    default:
+      throw new Error('Unknown auth type')
+  }
+}
+
 export class Bot extends Api {
-  public send: Sender
   private client = new WebSocketClient()
+  private connection: connection | null = null
   private events = new Events()
+
+  send: Sender
+  options: Required<Bot.Options>
+  _retryTimes?: number
+  _seq: number | null = null
+  _interval: NodeJS.Timeout | null = null
 
   on = this.events.on.bind(this.events)
   emit = this.events.emit.bind(this.events)
 
-  constructor(
-    private options: Bot.Options
-  ) {
-    super(options.endpoint, `Bot ${ options.app.id }.${ options.app.token }`, options.sandbox)
-    this.options = options
+  constructor(options: Bot.Options, private logger: Bot.Logger = console) {
+    const mergedOpts = Object.assign({
+      endpoint: 'https://api.sgroup.qq.com/',
+      authType: 'bot',
+      retryTimes: 3,
+      retryInterval: 3000
+    }, options)
+    super(mergedOpts.endpoint, genToken(mergedOpts.authType, mergedOpts.app), mergedOpts.sandbox)
+    this.logger = logger
+    this.options = mergedOpts
     this.send = createSender(this.$request)
 
     return attachApi(this)
   }
 
+  stopClient() {
+    this.client.removeAllListeners('connect')
+    this._seq = null
+    this._interval = null
+    this.connection?.close()
+    this.connection = null
+  }
+
+  private initConnection = (
+    connection: connection, intents: Bot.Intents | number
+  ) => new Promise<void>((resolve, reject) => {
+    this.connection = connection
+    let sessionId = ''
+    this.connection.on('message', message => {
+      if (message.type === 'utf8') {
+        const payload = camelCaseObjKeys<Bot.Payload>(JSON.parse(message.utf8Data))
+        switch (payload.op) {
+          case Bot.Opcode.HELLO:
+            const p: Bot.Payload = {
+              op: Bot.Opcode.IDENTIFY,
+              d: {
+                token: this.token, intents: 0 | intents
+              }
+            }
+            connection.send(JSON.stringify(p))
+            this._interval = setInterval(() => {
+              connection.send(JSON.stringify({ op: Bot.Opcode.HEARTBEAT, d: this._seq }))
+            }, payload.d.heartbeatInterval)
+            this._retryTimes = 0
+            resolve()
+            break
+          case Bot.Opcode.DISPATCH:
+            this._seq = payload.s
+            switch (payload.t) {
+              case 'READY':
+                sessionId = payload.d.sessionId
+                this.emit('ready')
+                break
+              case 'MESSAGE_CREATE':
+              case 'AT_MESSAGE_CREATE':
+                this.emit('message', payload.d)
+                break
+            }
+            break
+          case Bot.Opcode.HEARTBEAT_ACK: break
+        }
+      }
+    })
+    this.connection.on('error', reject)
+    this.connection.on('close', (code: number, desc: string) => {
+      this.logger.debug(`[DISCONNECT] ${ code }: ${ desc }`)
+      try {
+        if (this._retryTimes === undefined)
+          throw new Error(`Connection closed with code ${code}: ${desc}`)
+
+        const p = {
+          op: Bot.Opcode.RESUME,
+          d: {
+            sessionId, seq: this._seq,
+            token: this.token
+          }
+        }
+        if (this._retryTimes > this.options.retryTimes)
+          throw new Error(`Connection closed with code ${code}: ${desc}`)
+        setTimeout(() => {
+          connection.send(JSON.stringify(snakeCaseObjKeys(p)))
+          if (this._retryTimes)
+            this._retryTimes++
+          else
+            this._retryTimes = 1
+        }, this.options.retryInterval)
+      } catch (e) {
+        if (e instanceof Error)
+          this.emit('error', e)
+        else
+          throw e
+      }
+    })
+  })
+
   async startClient(intents: Bot.Intents | number): Promise<void> {
     const { url } = await this.$request.get<{ url: string }>('/gateway')
     this.client.connect(url)
     return new Promise((resolve, reject) => {
-      this.client.on('connect', connection => {
-        let sessionId = '', seq: number | null = null
-        connection.on('message', message => {
-          if (message.type === 'utf8') {
-            const payload = camelCaseObjKeys<Bot.Payload>(JSON.parse(message.utf8Data))
-            switch (payload.op) {
-              case Bot.Opcode.HELLO:
-                const p: Bot.Payload = {
-                  op: Bot.Opcode.IDENTIFY,
-                  d: {
-                    token: this.token, intents: 0 | intents
-                  }
-                }
-                connection.send(JSON.stringify(p))
-                setInterval(() => connection.send(JSON.stringify({ op: Bot.Opcode.HEARTBEAT, d: seq })), payload.d.heartbeatInterval)
-                resolve()
-                break
-              case Bot.Opcode.DISPATCH:
-                seq = payload.s
-                switch (payload.t) {
-                  case 'READY':
-                    sessionId = payload.d.sessionId
-                    this.emit('ready')
-                    break
-                  case 'MESSAGE_CREATE':
-                  case 'AT_MESSAGE_CREATE':
-                    this.emit('message', payload.d)
-                    break
-                }
-                break
-              case Bot.Opcode.HEARTBEAT_ACK: break
-            }
-          }
-        })
-        connection.on('error', reject)
-        connection.on('close', (code: number, desc: string) => {
-          console.warn(code, desc)
-          const p = {
-            op: Bot.Opcode.RESUME,
-            d: {
-              sessionId, seq,
-              token: this.token
-            }
-          }
-          connection.send(JSON.stringify(snakeCaseObjKeys(p)))
-        })
+      this.client.on('connect', conn => {
+        this.initConnection(conn, intents).then(resolve).catch(reject)
       })
       this.client.on('connectFailed', reject)
     })
@@ -80,6 +139,8 @@ export class Bot extends Api {
 }
 
 export namespace Bot {
+  export type Logger = Pick<Console, 'log' | 'debug' | 'warn' | 'error'>
+
   export interface AppConfig {
     id: string
     key: string
@@ -88,11 +149,15 @@ export namespace Bot {
 
   export interface Options {
     app: AppConfig
-    /** 目前还不支持 sandbox 环境，请勿使用。 */
+    /** 是否开启沙箱模式 */
     sandbox: boolean
     endpoint?: string
     /** 目前还不支持 bearer 验证方式。 */
     authType?: 'bot' | 'bearer'
+    /** 重连次数 */
+    retryTimes?: number
+    /** 重连时间间隔，单位 ms */
+    retryInterval?: number
   }
 
   export enum Intents {
