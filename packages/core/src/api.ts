@@ -18,15 +18,44 @@ export type InnerAxiosInstance = Omit<AxiosInstance, 'request' | TwoParamsMethod
   [K in ThreeParamsMethod]: ThreeParamsRequest
 }
 
-type D<T> = {
+export type D<T> = {
   info: T
   filter: { [K in keyof T]?: boolean }
 }
 
+/**
+ * 该接口可以用来扩展 SDK 的调用请求，设计目的是为了更好的让你使用 OOP 的方式进行接口的调用。
+ *
+ * @example
+ * 下面会介绍一下如何去请求一个接口
+ * ```ts
+ * // 将会请求 [get] /users/@me/guilds
+ * await api.guilds;
+ * // 将会请求 [get] /guilds/{id}
+ * await api.guild(id)
+ * // 嵌套请求
+ * // 将会请求 [get] /guilds/{id}/members
+ * await api.guild(id).members
+ * // 将会请求 [get] /guilds/{id}/members/{memberId}
+ * await api.guild(id).member(memberId)
+ * // 其他方法
+ * // 将会请求 [post] `body: {data}` /guilds/{id}/roles
+ * await api.guild(id).roles.add(data)
+ * // 将会请求 [delete] /guilds/{id}/roles/{roleId}
+ * await api.guild(id).role(roleId).del()
+ * // 将会请求 [patch] `body: {data}` /guilds/{id}/roles/{roleId}
+ * await api.guild(id).role(roleId).patch(data)
+ * ```
+ * 如果遇到了接口没有及时定义的情况，可以用下面的方法去扩展
+ * ```ts
+ * declare module '@qq-guild-sdk/core' {
+ *   interface Api {
+ *     get foos: Promise<Foo[]>
+ *   }
+ * }
+ * ```
+ */
 export interface Api {
-  /**
-   * get property will travel `/users/@me/propertyName`
-   */
   get guilds(): Promise<Guild[]>
   guild(id: string): Promise<Guild> & {
     get roles(): Promise<{
