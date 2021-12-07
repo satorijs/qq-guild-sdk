@@ -30,7 +30,7 @@ export type D<T> = {
  * 下面会介绍一下如何去请求一个接口
  * ```ts
  * // 将会请求 [get] /users/@me/guilds
- * await api.guilds;
+ * await api.guilds
  * // 将会请求 [get] /guilds/{id}
  * await api.guild(id)
  * // 嵌套请求
