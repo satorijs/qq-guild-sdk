@@ -5,13 +5,13 @@
 </p>
 
 <p align="center">
-  <a href="https://npmcharts.com/compare/vue?minimal=true">
+  <a href="https://npmcharts.com/compare/qq-guild-sdk?minimal=true">
     <img src="https://img.shields.io/npm/dm/qq-guild-sdk.svg?sanitize=true" alt="Downloads">
   </a>
-  <a href="https://www.npmjs.com/package/vue">
+  <a href="https://www.npmjs.com/package/qq-guild-sdk">
     <img src="https://img.shields.io/npm/v/qq-guild-sdk.svg?sanitize=true" alt="Version">
   </a>
-  <a href="https://www.npmjs.com/package/vue">
+  <a href="https://www.npmjs.com/package/qq-guild-sdk">
     <img src="https://img.shields.io/npm/l/qq-guild-sdk.svg?sanitize=true" alt="License">
   </a>
 </p>
