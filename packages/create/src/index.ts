@@ -9,7 +9,7 @@ async function main() {
   process.chdir(resolve(process.cwd(), projectDir || ''))
   console.log('If you not register your bot, you can register in: https://bot.q.qq.com/open/#/type')
   console.log('You need bot id, secret key and token, you can get it in: https://bot.q.qq.com/#/developer/developer-setting')
-  create(botName, await inquirer.prompt([{
+  const opts = await inquirer.prompt([{
     type: 'input',
     name: 'botName',
     default: botName,
@@ -66,17 +66,18 @@ async function main() {
     message: 'What package manager would you like to use?',
     choices: ['yarn', 'npm'],
     default: 'yarn'
-  // }, {
-  //   type: 'confirm',
-  //   name: 'eslint',
-  //   message: 'Would you like to use ESLint?',
-  //   default: true
-  // }, {
-  //   type: 'confirm',
-  //   name: 'git',
-  //   message: 'Would you like to use Git?',
-  //   default: true
-  }]))
+    // }, {
+    //   type: 'confirm',
+    //   name: 'eslint',
+    //   message: 'Would you like to use ESLint?',
+    //   default: true
+    // }, {
+    //   type: 'confirm',
+    //   name: 'git',
+    //   message: 'Would you like to use Git?',
+    //   default: true
+  }])
+  create(opts.botName, opts)
 }
 
 main().then(() => {
