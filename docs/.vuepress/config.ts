@@ -13,7 +13,7 @@ export default defineUserConfig<DefaultThemeOptions, ViteBundlerOptions>({
     logo: '/qq-guild-sdk.png',
     navbar: [
       { text: '指南', link: '/guide/nanny/' },
-      { text: 'API', link: '/api/' },
+      { text: 'API', link: '/api/core/bot/' },
       { text: 'GitHub', link: 'https://github.com/NWYLZW/qq-guild-sdk' },
     ],
     sidebar: {
@@ -29,6 +29,14 @@ export default defineUserConfig<DefaultThemeOptions, ViteBundlerOptions>({
         children: [
           '/guide/README.md'
         ],
+      }],
+      '/api/': [{
+        text: 'core',
+        children: [
+          '/api/core/Bot.md',
+          '/api/core/Api.md',
+          '/api/core/Sender.md'
+        ]
       }]
     },
     docsRepo: 'nwylzw/qq-guild-sdk'
