@@ -12,10 +12,25 @@ export default defineUserConfig<DefaultThemeOptions, ViteBundlerOptions>({
     search: true,
     logo: '/qq-guild-sdk.png',
     navbar: [
-      { text: '指南', link: '/guide' },
-      { text: 'API', link: '/api' },
+      { text: '指南', link: '/guide/nanny/' },
+      { text: 'API', link: '/api/' },
       { text: 'GitHub', link: 'https://github.com/NWYLZW/qq-guild-sdk' },
     ],
+    sidebar: {
+      '/guide/': [{
+        text: '保姆级',
+        children: [
+          '/guide/nanny/README.md',
+          '/guide/nanny/Q&A.md',
+          '/guide/nanny/environment.md'
+        ],
+      }, {
+        text: '基础',
+        children: [
+          '/guide/README.md'
+        ],
+      }]
+    },
     docsRepo: 'nwylzw/qq-guild-sdk'
   },
   bundler: '@vuepress/vite'
