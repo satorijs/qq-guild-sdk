@@ -46,14 +46,6 @@ export class Bot extends Api {
     return attachApi(this)
   }
 
-  stopClient() {
-    this.client.removeAllListeners('connect')
-    this._seq = null
-    this._interval = null
-    this.connection?.close()
-    this.connection = null
-  }
-
   private initConnection = (
     connection: connection, intents: Bot.Intents | number
   ) => new Promise<void>((resolve, reject) => {
@@ -135,6 +127,14 @@ export class Bot extends Api {
       })
       this.client.on('connectFailed', reject)
     })
+  }
+
+  stopClient() {
+    this.client.removeAllListeners('connect')
+    this._seq = null
+    this._interval = null
+    this.connection?.close()
+    this.connection = null
   }
 }
 
