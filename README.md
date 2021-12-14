@@ -1,8 +1,9 @@
-# QQ Guild Sdk
-
 <p align="center">
   <img width="100" src="./docs/.vuepress/public/qq-guild-sdk.png" alt="Shortln logo">
 </p>
+<h1 align="center">
+  <a href="https://nwylzw.github.io/qq-guild-sdk/">QQ Guild Sdk</a>
+</h1>
 
 <p align="center">
   <a href="https://npmcharts.com/compare/qq-guild-sdk?minimal=true">
