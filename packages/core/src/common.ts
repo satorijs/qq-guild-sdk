@@ -108,8 +108,14 @@ export interface Channel {
   ownerId: string
 }
 
+/**
+ * 公告对象
+ */
 export interface Announce {
+  /** 频道 id */
   guildId: string
+  /** 子频道 id */
   channelId: string
+  /** 消息 id */
   messageId: string
 }
