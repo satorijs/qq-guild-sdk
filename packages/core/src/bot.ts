@@ -52,38 +52,42 @@ export class Bot extends Api {
     this.connection = connection
     let sessionId = ''
     this.connection.on('message', message => {
-      if (message.type === 'utf8') {
-        const payload = camelCaseObjKeys<Bot.Payload>(JSON.parse(message.utf8Data))
-        switch (payload.op) {
-          case Bot.Opcode.HELLO:
-            const p: Bot.Payload = {
-              op: Bot.Opcode.IDENTIFY,
-              d: {
-                token: this.token, intents: 0 | intents
-              }
+      if (message.type !== 'utf8')
+        return
+
+      const payload = camelCaseObjKeys<Bot.Payload>(JSON.parse(message.utf8Data))
+      switch (payload.op) {
+        case Bot.Opcode.HELLO:
+          const p: Bot.Payload = {
+            op: Bot.Opcode.IDENTIFY,
+            d: {
+              token: this.token, intents: 0 | intents
             }
-            connection.send(JSON.stringify(p))
-            this._interval = setInterval(() => {
-              connection.send(JSON.stringify({ op: Bot.Opcode.HEARTBEAT, d: this._seq }))
-            }, payload.d.heartbeatInterval)
-            this._retryTimes = 0
-            resolve()
-            break
-          case Bot.Opcode.DISPATCH:
-            this._seq = payload.s
-            switch (payload.t) {
-              case 'READY':
-                sessionId = payload.d.sessionId
-                this.emit('ready')
-                break
-              case 'MESSAGE_CREATE':
-              case 'AT_MESSAGE_CREATE':
-                this.emit('message', payload.d)
-                break
-            }
-            break
-          case Bot.Opcode.HEARTBEAT_ACK: break
-        }
+          }
+          connection.send(JSON.stringify(p))
+          this._interval = setInterval(() => {
+            connection.send(JSON.stringify({ op: Bot.Opcode.HEARTBEAT, d: this._seq }))
+          }, payload.d.heartbeatInterval)
+          this._retryTimes = 0
+          resolve()
+          break
+        case Bot.Opcode.DISPATCH:
+          this._seq = payload.s
+          switch (payload.t) {
+            case 'READY':
+              sessionId = payload.d.sessionId
+              this.emit('ready')
+              break
+            case 'MESSAGE_CREATE':
+            case 'AT_MESSAGE_CREATE':
+              payload.d.timestamp = new Date(payload.d.timestamp)
+              payload.d.editedTimestamp = new Date(payload.d.editedTimestamp)
+              payload.d.member.joinedAt = new Date(payload.d.member.joinedAt)
+              this.emit('message', payload.d)
+              break
+          }
+          break
+        case Bot.Opcode.HEARTBEAT_ACK: break
       }
     })
     this.connection.on('error', reject)
