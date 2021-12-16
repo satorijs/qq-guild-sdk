@@ -1,7 +1,7 @@
 import { client as WebSocketClient, connection } from 'websocket'
 import { createSender, Message, Sender } from './sender'
 import { camelCaseObjKeys, snakeCaseObjKeys } from './utils'
-import { MessageReaction, User } from './common'
+import { Channel, Guild, MemberWithGuild, MessageReaction, User } from './common'
 import { Events } from './events'
 import { Api, attachApi } from './api'
 
@@ -15,6 +15,15 @@ function genToken(type: Bot.Options['authType'], app: Bot.AppConfig) {
     default:
       throw new Error('Unknown auth type')
   }
+}
+
+function getOpt(k: string): 'add' | 'upd' | 'del' {
+  const end = k.split('_').slice(-1)[0]
+  return (<Record<string, 'add' | 'upd' | 'del'>> {
+    'CREATE': 'add',
+    'UPDATE': 'upd',
+    'DELETE': 'del'
+  })[end]
 }
 
 export class Bot extends Api {
@@ -90,6 +99,23 @@ export class Bot extends Api {
               break
             case 'MESSAGE_REACTION_REMOVE':
               this.emit('reaction:del', payload.d)
+              break
+            case 'GUILD_CREATE':
+            case 'GUILD_UPDATE':
+            case 'GUILD_DELETE':
+              payload.d.joinedAt = new Date(payload.d?.joinedAt ?? '')
+              this.emit(`guild:${ getOpt(payload.t) }`, payload.d)
+              break
+            case 'CHANNEL_CREATE':
+            case 'CHANNEL_UPDATE':
+            case 'CHANNEL_DELETE':
+              this.emit(`channel:${ getOpt(payload.t) }`, payload.d)
+              break
+            case 'GUILD_MEMBER_CREATE':
+            case 'GUILD_MEMBER_UPDATE':
+            case 'GUILD_MEMBER_DELETE':
+              payload.d.joinedAt = new Date(payload.d?.joinedAt ?? '')
+              this.emit(`guild-member:${ getOpt(payload.t) }`, payload.d)
               break
           }
           break
@@ -273,6 +299,21 @@ export namespace Bot {
     s: number
     t: 'MESSAGE_REACTION_ADD' | 'MESSAGE_REACTION_REMOVE'
     d: MessageReaction
+  } | {
+    op: Opcode.DISPATCH
+    s: number
+    t: 'GUILD_CREATE' | 'GUILD_UPDATE' | 'GUILD_DELETE'
+    d: Guild
+  } | {
+    op: Opcode.DISPATCH
+    s: number
+    t: 'CHANNEL_CREATE' | 'CHANNEL_UPDATE' | 'CHANNEL_DELETE'
+    d: Channel
+  } | {
+    op: Opcode.DISPATCH
+    s: number
+    t: 'GUILD_MEMBER_CREATE' | 'GUILD_MEMBER_UPDATE' | 'GUILD_MEMBER_DELETE'
+    d: MemberWithGuild
   }
 
   export type Payload = DispatchPayload | {
