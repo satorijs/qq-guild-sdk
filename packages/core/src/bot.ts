@@ -161,11 +161,61 @@ export namespace Bot {
   }
 
   export enum Intents {
+    /**
+     * 频道事件
+     * - GUILD_CREATE   当机器人加入新guild时
+     * - GUILD_UPDATE   当guild资料发生变更时
+     * - GUILD_DELETE   当机器人退出guild时
+     * - CHANNEL_CREATE 当channel被创建时
+     * - CHANNEL_UPDATE 当channel被更新时
+     * - CHANNEL_DELETE 当channel被删除时
+     */
     GUILDS = 1 << 0,
+    /**
+     * 频道事件
+     * - GUILD_MEMBER_ADD    当成员加入时
+     * - GUILD_MEMBER_UPDATE 当成员资料变更时
+     * - GUILD_MEMBER_REMOVE 当成员被移除时
+     */
     GUILD_MEMBERS = 1 << 1,
+    /**
+     * 监听频道消息事件，只能在私域频道使用
+     */
     MESSAGE = 1 << 9,
+    /**
+     * 频道表情表态事件
+     * - MESSAGE_REACTION_ADD    为消息添加表情表态
+     * - MESSAGE_REACTION_REMOVE 为消息删除表情表态
+     */
+    GUILD_MESSAGE_REACTIONS = 1 << 10,
+    /**
+     * 监听私聊消息事件
+     * - DIRECT_MESSAGE_CREATE 当收到用户发给机器人的私信消息时
+     */
     DIRECT_MESSAGES = 1 << 12,
+    /**
+     * 主题帖子相关事件
+     * - THREAD_CREATE 当用户创建主题时
+     * - THREAD_UPDATE 当用户更新主题时
+     * - THREAD_DELETE 当用户删除主题时
+     * - POST_CREATE   当用户创建帖子时
+     * - POST_DELETE   当用户删除帖子时
+     * - REPLY_CREATE  当用户回复评论时
+     * - REPLY_DELETE  当用户回复评论时
+     */
+    FORUM_EVENT = 1 << 28,
+    /**
+     * 音频相关事件
+     * - AUDIO_START   音频开始播放时
+     * - AUDIO_FINISH  音频播放结束时
+     * - AUDIO_ON_MIC  上麦时
+     * - AUDIO_OFF_MIC 下麦时
+     */
     AUDIO_ACTION = 1 << 29,
+    /**
+     * AT 消息事件
+     * - AT_MESSAGE_CREATE 当收到@机器人的消息时
+     */
     AT_MESSAGE = 1 << 30
   }
 
