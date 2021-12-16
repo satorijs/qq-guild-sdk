@@ -108,6 +108,19 @@ export interface Channel {
   ownerId: string
 }
 
+export interface MemberWithGuild {
+  /** 频道 id */
+  guildId: string
+  /** 用户基础信息 */
+  user: User
+  /** 用户在频道内的昵称 */
+  nick: string
+  /** 用户在频道内的身份 */
+  roles: string[]
+  /** 用户加入频道的时间 */
+  joinedAt: Date
+}
+
 /**
  * 公告对象
  */
