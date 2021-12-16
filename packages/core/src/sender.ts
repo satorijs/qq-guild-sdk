@@ -1,4 +1,4 @@
-import { User } from './common'
+import { Member, User } from './common'
 import { isArray, isString } from './utils'
 import { InnerAxiosInstance } from './api'
 
@@ -25,8 +25,8 @@ export interface Message {
   embeds: Message.Embed[]
   /** 消息中@的人 */
   mentions?: User
-  // /** 消息创建者的member信息 */
-  // member: Member
+  /** 消息创建者的 member 信息 */
+  member: Member
   // /** ark消息 */
   // ark: Ark
 
