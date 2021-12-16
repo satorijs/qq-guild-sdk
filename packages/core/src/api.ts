@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { camelCaseObjKeys, snakeCaseObjKeys, pluralize } from './utils'
-import { Announce, Channel, Guild, Member, Role, User } from './common'
+import { Announce, Channel, Guild, Member, Role, Schedule, User } from './common'
 
 type TwoParamsMethod = 'get' | 'delete' | 'head' | 'options'
 type ThreeParamsMethod = 'post' | 'put' | 'patch'
@@ -85,6 +85,13 @@ export interface Api {
       add(d: Pick<Announce, 'messageId'>): Promise<Announce>
     }
     announce(msgId: string): {
+      del(): Promise<void>
+    }
+    get schedules(): Promise<Schedule[]> & {
+      add(d: Omit<Schedule, 'id'>): Promise<Schedule>
+    }
+    schedule(id: string): Promise<Schedule> & {
+      upd(d: Omit<Schedule, 'id'>): Promise<Schedule>
       del(): Promise<void>
     }
   }
