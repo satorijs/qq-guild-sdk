@@ -31,7 +31,7 @@ export default (botName: string, options: Options) => {
     }[options.language] }node -r dotenv/config ${ pkg.main }`
   }
   pkg.dependencies = {
-    'qq-guild-sdk': '^1.1.1'
+    'qq-guild-sdk': '^1.1.3'
   }
   pkg.devDependencies = {
   }
