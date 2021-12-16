@@ -107,3 +107,9 @@ export interface Channel {
   /** 创建人 id */
   ownerId: string
 }
+
+export interface Announce {
+  guildId: string
+  channelId: string
+  messageId: string
+}

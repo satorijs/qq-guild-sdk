@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { camelCaseObjKeys, snakeCaseObjKeys, pluralize } from './utils'
-import { Channel, Guild, Member, Role, User } from './common'
+import { Announce, Channel, Guild, Member, Role, User } from './common'
 
 type TwoParamsMethod = 'get' | 'delete' | 'head' | 'options'
 type ThreeParamsMethod = 'post' | 'put' | 'patch'
@@ -68,7 +68,6 @@ export interface Api {
     }
     role(id: string): {
       del(): Promise<void>
-
       upd(d: D<Partial<Pick<Role, 'name' | 'color' | 'hoist'>>>): Promise<{
         role: Role
         roleId: string
@@ -81,7 +80,14 @@ export interface Api {
     }
     get channels(): Promise<Channel[]>
   }
-  channel(id: string): Promise<Channel>
+  channel(id: string): Promise<Channel> & {
+    get announces(): {
+      add(d: Pick<Announce, 'messageId'>): Promise<Announce>
+    }
+    announce(msgId: string): {
+      del(): Promise<void>
+    }
+  }
 }
 
 export class Api {
