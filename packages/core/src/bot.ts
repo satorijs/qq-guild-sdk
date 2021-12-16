@@ -1,7 +1,7 @@
 import { client as WebSocketClient, connection } from 'websocket'
 import { createSender, Message, Sender } from './sender'
 import { camelCaseObjKeys, snakeCaseObjKeys } from './utils'
-import { User } from './common'
+import { MessageReaction, User } from './common'
 import { Events } from './events'
 import { Api, attachApi } from './api'
 
@@ -84,6 +84,12 @@ export class Bot extends Api {
               payload.d.editedTimestamp = new Date(payload.d.editedTimestamp)
               payload.d.member.joinedAt = new Date(payload.d.member.joinedAt)
               this.emit('message', payload.d)
+              break
+            case 'MESSAGE_REACTION_ADD':
+              this.emit('reaction:add', payload.d)
+              break
+            case 'MESSAGE_REACTION_REMOVE':
+              this.emit('reaction:del', payload.d)
               break
           }
           break
@@ -262,6 +268,11 @@ export namespace Bot {
     s: number
     t: 'MESSAGE_CREATE' | 'AT_MESSAGE_CREATE'
     d: Message
+  } | {
+    op: Opcode.DISPATCH
+    s: number
+    t: 'MESSAGE_REACTION_ADD' | 'MESSAGE_REACTION_REMOVE'
+    d: MessageReaction
   }
 
   export type Payload = DispatchPayload | {

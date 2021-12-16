@@ -1,4 +1,5 @@
 import { Message } from './sender'
+import { MessageReaction } from './common'
 
 export class Events {
   private readonly listeners: {
@@ -37,5 +38,7 @@ export namespace Events {
     'ready': () => Awaitable<void>
     'error': (error: Error) => Awaitable<void>
     'message': (msg: Message) => Awaitable<string | void>
+    'reaction:add': (msg: MessageReaction) => Awaitable<void>
+    'reaction:del': (msg: MessageReaction) => Awaitable<void>
   }
 }
