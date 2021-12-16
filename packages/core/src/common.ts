@@ -196,3 +196,43 @@ export enum EmojiType {
   /** emoji 表情 */
   DEFAULT = 2
 }
+
+/**
+ * 日程对象
+ */
+export interface Schedule {
+  /** 日程 id */
+  id: string
+  /** 日程名称 */
+  name: string
+  /** 日程描述 */
+  description: string
+  /** 日程开始时间戳(ms) */
+  startTimestamp: Date
+  /** 日程结束时间戳(ms) */
+  endTimestamp: Date
+  /** 创建者 */
+  creator: Member
+  /** 日程开始时跳转到的子频道 id */
+  jumpChannelId: string
+  /** 日程提醒类型，取值参考 RemindType */
+  remindType: RemindType
+}
+
+/**
+ * 日程提醒类型
+ */
+export enum RemindType {
+  /** 不提醒 */
+  NEVER = '0',
+  /** 开始时提醒 */
+  START = '1',
+  /** 开始前5分钟提醒 */
+  BEFORE_5 = '2',
+  /** 开始前15分钟提醒 */
+  BEFORE_15 = '3',
+  /** 开始前30分钟提醒 */
+  BEFORE_30 = '4',
+  /** 开始前60分钟提醒 */
+  BEFORE_60 = '5',
+}
