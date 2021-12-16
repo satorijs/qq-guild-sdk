@@ -51,7 +51,7 @@ export interface Guild {
   memberCount?: number
   maxMembers?: number
   description?: number
-  joinedAt?: number
+  joinedAt?: Date
 }
 
 export enum ChannelType {
