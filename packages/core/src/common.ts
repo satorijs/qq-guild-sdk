@@ -119,3 +119,67 @@ export interface Announce {
   /** 消息 id */
   messageId: string
 }
+
+/**
+ * 表情表态对象
+ */
+export interface MessageReaction {
+  /** 用户 ID */
+  userId: string
+  /** 频道 ID */
+  guildId: string
+  /** 子频道 ID */
+  channelId: string
+  /** 表态对象 */
+  target: ReactionTarget
+  /** 表态所用表情 */
+  emoji: Emoji
+}
+
+/**
+ * 表态对象
+ */
+export interface ReactionTarget {
+  /** 表态对象 ID */
+  id: string
+  /** 表态对象类型 */
+  type: ReactionTargetType
+}
+
+/**
+ * 表态对象类型
+ */
+export enum ReactionTargetType {
+  /** 消息 */
+  MESSAGE = 0,
+  /** 帖子 */
+  POST = 1,
+  /** 评论 */
+  COMMENT = 2,
+  /** 回复 */
+  REPLY = 3
+}
+
+/**
+ * 表情对象
+ */
+export interface Emoji {
+  /**
+   * 表情 ID
+   * 系统表情使用数字为 ID
+   * emoji 使用 emoji 本身为 id
+   */
+  id: string
+  /** 表情类型 */
+  type: number
+}
+
+/**
+ * 表情类型
+ */
+export enum EmojiType {
+  /** 系统表情 */
+  SYSTEM = 1,
+  /** emoji 表情 */
+  DEFAULT = 2
+}
