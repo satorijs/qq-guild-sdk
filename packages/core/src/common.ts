@@ -236,3 +236,10 @@ export enum RemindType {
   /** 开始前60分钟提醒 */
   BEFORE_60 = '5',
 }
+
+export interface Mute {
+  /** 禁言到期时间戳，绝对时间戳，单位：秒（与 muteSeconds 字段同时赋值的话，以该字段为准） */
+  muteEndTimestamp: string
+  /** 禁言多少秒（两个字段二选一，默认以 muteEndTimestamp 为准） */
+  muteSeconds: number
+}

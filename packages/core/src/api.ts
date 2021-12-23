@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { camelCaseObjKeys, snakeCaseObjKeys, pluralize } from './utils'
-import { Announce, Channel, Guild, Member, Role, Schedule, User } from './common'
+import { Announce, Channel, Guild, Member, Mute, Role, Schedule, User } from './common'
 
 type TwoParamsMethod = 'get' | 'delete' | 'head' | 'options'
 type ThreeParamsMethod = 'post' | 'put' | 'patch'
@@ -58,6 +58,9 @@ export type D<T> = {
 export interface Api {
   get guilds(): Promise<Guild[]>
   guild(id: string): Promise<Guild> & {
+    get mute(): {
+      upd(d: Mute): Promise<void>
+    }
     get roles(): Promise<{
       roles: Role[]
       guildId: string
@@ -76,6 +79,9 @@ export interface Api {
     }
     get members(): Promise<Member[]>
     member(id: string): Promise<Member> & {
+      get mute(): {
+        upd(d: Mute): Promise<void>
+      }
       role(id: string): Promise<Role>
     }
     get channels(): Promise<Channel[]>
