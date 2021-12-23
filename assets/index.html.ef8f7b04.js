@@ -1,0 +1,1 @@
+const e={key:"v-4e12fe96",path:"/guide/nanny/",title:"\u7B80\u4ECB",lang:"zh-CN",frontmatter:{},excerpt:"",headers:[],filePathRelative:"guide/nanny/README.md",git:{updatedTime:1638867851e3,contributors:[{name:"yijie4188",email:"yijie4188@gmail.com",commits:1}]}};export{e as data};
