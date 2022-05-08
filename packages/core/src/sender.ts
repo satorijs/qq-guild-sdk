@@ -8,7 +8,7 @@ export interface Message {
   /** 消息创建者 */
   author: User
   /** 消息内容 */
-  content: string
+  content?: string
   /** 频道 id */
   guildId: string
   /** 子频道 id */
