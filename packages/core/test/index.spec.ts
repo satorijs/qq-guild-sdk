@@ -42,11 +42,7 @@ describe('Bot', function () {
     })
     await new Promise<void>(resolve => {
       bot.on('message', m => {
-        bot.send.reply(m.id, {
-          type: 'channel',
-          id: m.channelId
-        }, 'Hello, world!')
-        console.log('m:', m)
+        bot.send.channel.reply(m.id, m.channelId, 'Hello, world!')
         resolve()
       })
     })
