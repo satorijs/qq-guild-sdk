@@ -215,9 +215,11 @@ export namespace Bot {
      */
     GUILD_MEMBERS = 1 << 1,
     /**
-     * 监听频道消息事件，只能在私域频道使用
+     * 消息事件，仅 *私域* 机器人能够设置此 intents。
+     * - MESSAGE_CREATE         // 发送消息事件，代表频道内的全部消息，而不只是 at 机器人的消息。内容与 AT_MESSAGE_CREATE 相同
+     * - MESSAGE_DELETE         // 删除（撤回）消息事件
      */
-    MESSAGE = 1 << 9,
+    GUILD_MESSAGES = 1 << 9,
     /**
      * 频道表情表态事件
      * - MESSAGE_REACTION_ADD    为消息添加表情表态
@@ -227,17 +229,28 @@ export namespace Bot {
     /**
      * 监听私聊消息事件
      * - DIRECT_MESSAGE_CREATE 当收到用户发给机器人的私信消息时
+     * - DIRECT_MESSAGE_DELETE 删除（撤回）消息事件
      */
     DIRECT_MESSAGES = 1 << 12,
     /**
-     * 主题帖子相关事件
-     * - THREAD_CREATE 当用户创建主题时
-     * - THREAD_UPDATE 当用户更新主题时
-     * - THREAD_DELETE 当用户删除主题时
-     * - POST_CREATE   当用户创建帖子时
-     * - POST_DELETE   当用户删除帖子时
-     * - REPLY_CREATE  当用户回复评论时
-     * - REPLY_DELETE  当用户回复评论时
+     * - INTERACTION_CREATE 互动事件创建时
+     */
+    INTERACTIONS = 1 << 26,
+    /**
+     * - MESSAGE_AUDIT_PASS   消息审核通过
+     * - MESSAGE_AUDIT_REJECT 消息审核不通过
+     */
+    MESSAGE_AUDIT = 1 << 27,
+    /**
+     * 论坛事件，仅 *私域* 机器人能够设置此 intents。
+     * - FORUM_THREAD_CREATE        当用户创建主题时
+     * - FORUM_THREAD_UPDATE        当用户更新主题时
+     * - FORUM_THREAD_DELETE        当用户删除主题时
+     * - FORUM_POST_CREATE          当用户创建帖子时
+     * - FORUM_POST_DELETE          当用户删除帖子时
+     * - FORUM_REPLY_CREATE         当用户回复评论时
+     * - FORUM_REPLY_DELETE         当用户回复评论时
+     * - FORUM_PUBLISH_AUDIT_RESULT 当用户发表审核通过时
      */
     FORUM_EVENT = 1 << 28,
     /**
@@ -249,10 +262,11 @@ export namespace Bot {
      */
     AUDIO_ACTION = 1 << 29,
     /**
-     * AT 消息事件
-     * - AT_MESSAGE_CREATE 当收到@机器人的消息时
+     * 消息事件，此为公域的消息事件
+     * - AT_MESSAGE_CREATE     当收到@机器人的消息时
+     * - PUBLIC_MESSAGE_DELETE 当频道的消息被删除时
      */
-    AT_MESSAGE = 1 << 30
+    PUBLIC_GUILD_MESSAGES = 1 << 30
   }
 
   export enum Opcode {

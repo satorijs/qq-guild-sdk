@@ -56,7 +56,7 @@ const bot = createBot({
 ```js
 async function main() {
   // 启动 wss 连接服务，并设置本次连接权限
-  await bot.startClient(Bot.Intents.AT_MESSAGE | Bot.Intents.GUILDS)
+  await bot.startClient(Bot.Intents.PUBLIC_GUILD_MESSAGES | Bot.Intents.GUILDS)
   bot.on('ready', () => {
     console.log('Bot is ready.')
   })

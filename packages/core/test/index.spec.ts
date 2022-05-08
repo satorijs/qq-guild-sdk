@@ -36,9 +36,19 @@ describe('Bot', function () {
 
   this.timeout(30000)
   it('should connect server by websocket.', async () => {
-    await bot.startClient(Bot.Intents.AT_MESSAGE | Bot.Intents.GUILDS)
-    return new Promise<void>(resolve => {
+    await bot.startClient(Bot.Intents.GUILD_MESSAGES | Bot.Intents.GUILDS)
+    await new Promise<void>(resolve => {
       bot.on('ready', resolve)
+    })
+    await new Promise<void>(resolve => {
+      bot.on('message', m => {
+        bot.send.reply(m.id, {
+          type: 'channel',
+          id: m.channelId
+        }, 'Hello, world!')
+        console.log('m:', m)
+        resolve()
+      })
     })
   })
 })
