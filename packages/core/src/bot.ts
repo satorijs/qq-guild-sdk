@@ -208,7 +208,7 @@ export namespace Bot {
      */
     GUILDS = 1 << 0,
     /**
-     * 频道事件
+     * 频道成员事件
      * - GUILD_MEMBER_ADD    当成员加入时
      * - GUILD_MEMBER_UPDATE 当成员资料变更时
      * - GUILD_MEMBER_REMOVE 当成员被移除时
@@ -216,8 +216,8 @@ export namespace Bot {
     GUILD_MEMBERS = 1 << 1,
     /**
      * 消息事件，仅 *私域* 机器人能够设置此 intents。
-     * - MESSAGE_CREATE         // 发送消息事件，代表频道内的全部消息，而不只是 at 机器人的消息。内容与 AT_MESSAGE_CREATE 相同
-     * - MESSAGE_DELETE         // 删除（撤回）消息事件
+     * - MESSAGE_CREATE 发送消息事件，代表频道内的全部消息，而不只是 at 机器人的消息。内容与 AT_MESSAGE_CREATE 相同
+     * - MESSAGE_DELETE 删除（撤回）消息事件
      */
     GUILD_MESSAGES = 1 << 9,
     /**

@@ -79,9 +79,13 @@
 
 |   意图类型   |       描述       | 补充 |
 |:--------:|:--------------:|------|
-| `GUILDS` |      群组事件      |      |
-| `GUILD_MEMBERS` |     群组成员事件     |      |
-| `MESSAGE` |      消息事件      |   该事件只能使用于私域   |
-| `DIRECT_MESSAGES` |      私聊事件      |      |
+| `GUILDS` |      频道事件      |      |
+| `GUILD_MEMBERS` |     频道成员事件     |      |
+| `GUILD_MESSAGES` |      频道消息事件      |   仅 *私域* 机器人能够设置此 intents。   |
+| `GUILD_MESSAGE_REACTIONS` |      频道表情表态事件      |      |
+| `DIRECT_MESSAGES` |      私聊消息事件      |      |
+| `INTERACTIONS` |      互动事件      |      |
+| `MESSAGE_AUDIT` |      消息审核事件      |      |
+| `FORUM_EVENT` |      论坛事件      |   仅 *私域* 机器人能够设置此 intents。   |
 | `AUDIO_ACTION` |      音频事件      |      |
-| `AT_MESSAGE` |     @ 消息事件     |      |
+| `PUBLIC_GUILD_MESSAGES` |     消息事件，此为公域的消息事件     |      |
