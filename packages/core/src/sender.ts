@@ -27,12 +27,37 @@ export interface Message {
   mentions?: User
   /** 消息创建者的 member 信息 */
   member: Member
-  // /** ark消息 */
-  // ark: Ark
-
+  /** ark消息 */
+  ark?: Message.Ark
+  /** 子频道消息 seq，用于消息间的排序，seq 在同一子频道中按从先到后的顺序递增，不同的子频道之间消息无法排序 */
+  seqInChannel?: string
+  /** 引用消息对象 */
+  messageReference?: Message.Reference
+  /** 用于私信场景下识别真实的来源频道id */
+  srcGuildId?: string
 }
 
 export namespace Message {
+  export interface Ark {
+    /** ark模板id（需要先申请） */
+    templateId: number
+    /** kv值列表 */
+    kv: ArkKv[]
+  }
+  export interface ArkKv {
+    key: string
+    value?: string
+    /** ark obj类型的列表 */
+    obj?: ArkObj[]
+  }
+  export interface ArkObj {
+    /** ark objkv列表 */
+    objKv: ArkObjKv[]
+  }
+  export interface ArkObjKv {
+    key: string
+    value: string
+  }
   export interface EmbedField {
     /** 字段名 */
     name: string
@@ -51,11 +76,49 @@ export namespace Message {
     /** 对象数组	消息创建时间 */
     fields:	EmbedField
   }
+  export interface Markdown {
+    /** markdown 模板 id */
+    templateId?: number
+    /** markdown 模板模板参数 */
+    params?: MarkdownParams
+    /** 原生 markdown 内容,与 template_id 和 params参数互斥,参数都传值将报错。 */
+    content?: string
+  }
+  export interface MarkdownParams {
+    /** markdown 模版 key */
+    key: string
+    /** markdown 模版 key 对应的 values ，列表长度大小为 1 代表单 value 值，长度大于1则为列表类型的参数 values 传参数 */
+    values: string[]
+  }
+  export interface Reference {
+    /** 需要引用回复的消息 id */
+    messageId: string
+    /** 是否忽略获取引用消息详情错误，默认否 */
+    ignoreGetMessageError?: boolean
+  }
   export interface Request {
     embed?: Embed
     image?: string
     msgId?: string
     content: string
+  }
+  export interface RequestAll {
+    /** 选填，消息内容，文本内容，支持内嵌格式 */
+    content?: string
+    /** 选填，embed 消息，一种特殊的 ark*/
+    embed?: Embed
+    /** 选填，ark 消息 */
+    ark?: Ark
+    /** 选填，引用消息 */
+    messageReference?: Reference
+    /** 选填，图片url地址，平台会转存该图片，用于下发图片消息 */
+    image?: string
+    /** 选填，要回复的消息id(Message.id), 在 AT_CREATE_MESSAGE 事件中获取。 */
+    msgId?: string
+    /** 选填，要回复的事件id, 在各事件对象中获取。 */
+    eventId?: string
+    /** 选填，markdown 消息 */
+    markdown?: Markdown
   }
   export interface Response extends Message {
     tts: boolean
@@ -132,6 +195,12 @@ export const createSender = <Type extends Sender.TargetType | undefined = undefi
           return target.ids.map(id => axiosInstance.post<Message.Response>(`/channels/${ id }/messages`, req))
         } else {
           return axiosInstance.post<Message.Response>(`/channels/${ target.id }/messages`, req)
+        }
+      case 'private':
+        if (target.ids) {
+          return target.ids.map(id => axiosInstance.post<Message.Response>(`/dms/${ id }/messages`, req))
+        } else {
+          return axiosInstance.post<Message.Response>(`/dms/${ target.id }/messages`, req)
         }
       default:
         throw new Error(`target.type ${ target.type } is not supported`)
