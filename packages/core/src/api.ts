@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { camelCaseObjKeys, snakeCaseObjKeys, pluralize } from './utils'
-import { Announce, Channel, Guild, Member, Mute, Role, Schedule, User } from './common'
+import { Announce, Channel, Guild, Member, Mute, OpenApiError, Role, Schedule, User } from './common'
 
 type TwoParamsMethod = 'get' | 'delete' | 'head' | 'options'
 type ThreeParamsMethod = 'post' | 'put' | 'patch'
@@ -16,6 +16,17 @@ export type InnerAxiosInstance = Omit<AxiosInstance, 'request' | TwoParamsMethod
   [K in TwoParamsMethod]: TwoParamsRequest
 } & {
   [K in ThreeParamsMethod]: ThreeParamsRequest
+}
+export class RequestError<T = any> extends Error {
+  constructor(message: string, config: AxiosRequestConfig<T>, request?: any, data?: OpenApiError) {
+    super(message)
+    this.config = config
+    this.request = request
+    this.data = data
+  }
+  config: AxiosRequestConfig<T>;
+  request?: any;
+  data?: OpenApiError;
 }
 
 export type D<T> = {
@@ -132,6 +143,15 @@ export class Api {
       (error: any) => Promise.reject(error)
     )
     a.interceptors.response.use((response: AxiosResponse) => {
+      if (response.status === 201 || response.status === 202) {
+        const err: RequestError = new RequestError<any>(
+          response.data.message,
+          response.config,
+          response.request,
+          response.data
+        )
+        return Promise.reject(err)
+      }
       return camelCaseObjKeys(response.data)
     }, async (error: AxiosError<{}>) => {
       const response = error?.response

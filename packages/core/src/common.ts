@@ -243,3 +243,12 @@ export interface Mute {
   /** 禁言多少秒（两个字段二选一，默认以 muteEndTimestamp 为准） */
   muteSeconds: number
 }
+
+export interface OpenApiError {
+  /** 错误码，见 https://bot.q.qq.com/wiki/develop/api/openapi/error/error.html */
+  code: number
+  /** 错误消息说明 */
+  message: string
+  /** 部分错误类型带有data */
+  data?: any
+}
