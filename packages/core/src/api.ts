@@ -184,7 +184,7 @@ export interface Api {
        * @description 需要控制发送参数的可以使用这个方法，普通消息可以使用 bot.send
        * @param d 消息发送参数
        */
-      add(d: Message.RequestAll): Promise<Message>
+      add(d: Message.Request): Promise<Message>
     }
     /** 获取指定消息 */
     message(id: string): Promise<Message> & {
@@ -233,7 +233,7 @@ export interface Api {
   dm(id: string): {
     get messages(): {
       /** 发送私信 */
-      add(d: Message.RequestAll): Promise<Message>
+      add(d: Message.Request): Promise<Message>
     }
     message(id: string): {
       /** 撤回私信 */

@@ -97,12 +97,6 @@ export namespace Message {
     ignoreGetMessageError?: boolean
   }
   export interface Request {
-    embed?: Embed
-    image?: string
-    msgId?: string
-    content: string
-  }
-  export interface RequestAll {
     /** 选填，消息内容，文本内容，支持内嵌格式 */
     content?: string
     /** 选填，embed 消息，一种特殊的 ark*/
