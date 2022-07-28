@@ -46,7 +46,7 @@ namespace Utils {
       if (isArray(o)) {
         return o.map(deal)
       }
-      if (isString(o) || isNumber(o)) {
+      if (isString(o) || isNumber(o) || isBoolean(o)) {
         return o
       }
 

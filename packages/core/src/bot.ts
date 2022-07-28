@@ -20,6 +20,7 @@ function genToken(type: Bot.Options['authType'], app: Bot.AppConfig) {
 function getOpt(k: string): 'add' | 'upd' | 'del' {
   const end = k.split('_').slice(-1)[0]
   return (<Record<string, 'add' | 'upd' | 'del'>> {
+    'ADD': 'add',
     'CREATE': 'add',
     'UPDATE': 'upd',
     'DELETE': 'del'
@@ -89,6 +90,7 @@ export class Bot extends Api {
               break
             case 'MESSAGE_CREATE':
             case 'AT_MESSAGE_CREATE':
+            case 'DIRECT_MESSAGE_CREATE':
               payload.d.timestamp = new Date(payload.d.timestamp)
               payload.d.editedTimestamp = new Date(payload.d.editedTimestamp)
               payload.d.member.joinedAt = new Date(payload.d.member.joinedAt)
@@ -111,7 +113,7 @@ export class Bot extends Api {
             case 'CHANNEL_DELETE':
               this.emit(`channel:${ getOpt(payload.t) }`, payload.d)
               break
-            case 'GUILD_MEMBER_CREATE':
+            case 'GUILD_MEMBER_ADD':
             case 'GUILD_MEMBER_UPDATE':
             case 'GUILD_MEMBER_DELETE':
               payload.d.joinedAt = new Date(payload.d?.joinedAt ?? '')
@@ -306,7 +308,7 @@ export namespace Bot {
   } | {
     op: Opcode.DISPATCH
     s: number
-    t: 'MESSAGE_CREATE' | 'AT_MESSAGE_CREATE'
+    t: 'MESSAGE_CREATE' | 'AT_MESSAGE_CREATE' | 'DIRECT_MESSAGE_CREATE'
     d: Message
   } | {
     op: Opcode.DISPATCH
@@ -326,7 +328,7 @@ export namespace Bot {
   } | {
     op: Opcode.DISPATCH
     s: number
-    t: 'GUILD_MEMBER_CREATE' | 'GUILD_MEMBER_UPDATE' | 'GUILD_MEMBER_DELETE'
+    t: 'GUILD_MEMBER_ADD' | 'GUILD_MEMBER_UPDATE' | 'GUILD_MEMBER_DELETE'
     d: MemberWithGuild
   }
 

@@ -89,6 +89,24 @@ export interface ChannelPermissions {
   permissions: string
 }
 
+export enum ChannelPrivateType {
+  /** 公开频道 */
+  PUBLIC = 0,
+  /** 群主管理员可见 */
+  ADMIN_ONLY = 1,
+  /** 群主管理员+指定成员 */
+  SELECTED_MEMBERS = 2
+}
+
+export enum ChannelSpeakPermission {
+  /** 无效类型 */
+  INVALID = 0,
+  /** 所有人 */
+  ALL = 1,
+  /** 群主管理员+指定成员 */
+  SELECTED_MEMBERS = 2
+}
+
 export interface Channel {
   /** 子频道 id */
   id: string
@@ -106,6 +124,14 @@ export interface Channel {
   parentId: string
   /** 创建人 id */
   ownerId: string
+  /** 子频道私密类型 */
+  privateType: ChannelPrivateType,
+  /** 子频道发言权限 */
+  speakPermission: ChannelSpeakPermission,
+  /** 用于标识应用子频道应用类型，仅应用子频道时会使用该字段 */
+  applicationId?: string,
+  /** 子频道私密类型 */
+  permissions: string,
 }
 
 export interface MemberWithGuild {
@@ -239,7 +265,90 @@ export enum RemindType {
 
 export interface Mute {
   /** 禁言到期时间戳，绝对时间戳，单位：秒（与 muteSeconds 字段同时赋值的话，以该字段为准） */
-  muteEndTimestamp: string
+  muteEndTimestamp?: string
   /** 禁言多少秒（两个字段二选一，默认以 muteEndTimestamp 为准） */
-  muteSeconds: number
+  muteSeconds?: number
+  /** 禁言成员的user_id列表，即 User 的id */
+  userIds?: string[]
+}
+
+export enum DeleteHistoryMsgDays {
+  ALL = -1,
+  NONE = 0,
+  DAY_3 = 3,
+  DAY_7 = 7,
+  DAY_15 = 15,
+  DAY_30 = 30,
+}
+
+export interface MessageSetting {
+  /** 是否允许创建私信 */
+  disableCreateDm: string
+  /** 是否允许发主动消息 */
+  disablePushMsg: string
+  /** 子频道 id 数组 */
+  channelIds: string
+  /** 每个子频道允许主动推送消息最大消息条数 */
+  channelPushMaxNum: string
+}
+
+/**
+ * 创建的私信会话
+ */
+export interface DMS {
+  /** 私信会话关联的频道 id */
+  guildId: string
+  /** 私信会话关联的子频道 id */
+  channelId: string
+  /** 创建私信会话时间戳 */
+  createTime: string
+}
+
+/**
+ * 精华消息对象
+ */
+export interface PinsMessage {
+  /** 频道 id */
+  guildId: string
+  /** 子频道 id */
+  channelId: string
+  /** 子频道内精华消息 id 数组 */
+  messageIds: string[]
+}
+
+/**
+ * 接口权限对象
+ */
+export interface APIPermission {
+  /** API 接口名，例如 /guilds/{guild_id}/members/{user_id} */
+  path: string
+  /** 请求方法，例如 GET */
+  method: string
+  /** API 接口名称，例如 获取频道信息 */
+  desc: string
+  /** 授权状态，auth_stats 为 1 时已授权 */
+  authStatus: number
+}
+
+export interface APIPermissionDemandIdentify {
+  /** API 接口名，例如 /guilds/{guild_id}/members/{user_id} */
+  path: string
+  /** 请求方法，例如 GET */
+  method: string
+}
+
+/**
+ * 接口权限需求对象
+ */
+export interface APIPermissionDemand {
+  /** 申请接口权限的频道 id */
+  guildId: string
+  /** 接口权限需求授权链接发送的子频道 id */
+  channelId: string
+  /** 权限接口唯一标识 */
+  apiIdentify: APIPermissionDemandIdentify
+  /** 接口权限链接中的接口权限描述信息 */
+  title: string
+  /** 接口权限链接中的机器人可使用功能的描述信息 */
+  desc: string
 }

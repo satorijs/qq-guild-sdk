@@ -1,6 +1,18 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { camelCaseObjKeys, snakeCaseObjKeys, pluralize } from './utils'
-import { Announce, Channel, Guild, Member, Mute, Role, Schedule, User } from './common'
+import {
+  Announce, APIPermission, APIPermissionDemand, APIPermissionDemandIdentify,
+  Channel,
+  ChannelPermissions,
+  DeleteHistoryMsgDays, DMS,
+  Guild,
+  Member, MessageSetting,
+  Mute, PinsMessage,
+  Role,
+  Schedule,
+  User
+} from './common'
+import { Message } from './sender'
 
 type TwoParamsMethod = 'get' | 'delete' | 'head' | 'options'
 type ThreeParamsMethod = 'post' | 'put' | 'patch'
@@ -56,9 +68,64 @@ export type D<T> = {
  * ```
  */
 export interface Api {
+  /**
+   * 获取用户频道列表
+   */
   get guilds(): Promise<Guild[]>
+
+  /**
+   * 获取频道详情
+   * @param id 指定的频道 ID
+   */
   guild(id: string): Promise<Guild> & {
+    get announces(): {
+      /** 创建频道公告 */
+      add(d: Pick<Announce, 'messageId'>): Promise<Announce>
+    }
+    announce(msgId: string): {
+      /** 删除频道公告 */
+      del(): Promise<void>
+    }
+    /** 获取频道可用权限列表 */
+    get api_permission(): Promise<APIPermission[]> & {
+      demand(): {
+        add(d: { channelId: string, apiIdentify: APIPermissionDemandIdentify, desc: string }): Promise<APIPermissionDemand>
+      }
+    }
+    /** 获取子频道列表 */
+    get channels(): Promise<Channel[]> & {
+      /** 创建子频道 */
+      add(d: D<Pick<Channel, 'name' | 'type' | 'subType' | 'position' | 'parentId' | 'privateType' | 'speakPermission' | 'applicationId' >>): Promise<Channel>
+    }
+    /** 获取频道成员列表 */
+    get members(): Promise<Member[]>
+    /** 获取成员详情 */
+    member(id: string): Promise<Member> & {
+      get mute(): {
+        upd(d: Mute): Promise<void>
+      }
+      role(id: string): Promise<Role> & {
+        /**
+         * 创建频道身份组成员
+         * @description 用于将频道 `guild_id` 下的用户 `user_id` 添加到身份组 `role_id` 。
+         * @param d 如果要删除的身份组 ID 是5-子频道管理员，需要增加 channel 对象来指定具体是哪个子频道。
+         */
+        put(d: { channel: Partial<Pick<Channel, 'id'>>}): Promise<void>
+        /**
+         * 删除频道身份组成员
+         * @description 用于将 用户 `user_id` 从 频道 `guild_id` 的 `role_id` 身份组中移除
+         * @param d 如果要删除的身份组 ID 是5-子频道管理员，需要增加 channel 对象来指定具体是哪个子频道。
+         */
+        del(d: { channel: Partial<Pick<Channel, 'id'>>}): Promise<void>
+      }
+      get message(): {
+        get setting(): Promise<MessageSetting>
+      }
+      /** 删除频道成员 */
+      del(d: { addBlacklist: boolean, deleteHistoryMsgDays: DeleteHistoryMsgDays }): Promise<void>
+    }
     get mute(): {
+      /** 禁言批量成员 (不含 userIds 参数时禁言全员) */
       upd(d: Mute): Promise<void>
     }
     get roles(): Promise<{
@@ -67,37 +134,109 @@ export interface Api {
       /** 默认分组上限 */
       roleNumLimit: number
     }> & {
+      /** 创建频道身份组 */
       add(d: D<Pick<Role, 'name' | 'color' | 'hoist'>>): Promise<{roleId: string; role: Role}>
     }
     role(id: string): {
+      /** 删除频道身份组 */
       del(): Promise<void>
+      /** 修改频道身份组 */
       upd(d: D<Partial<Pick<Role, 'name' | 'color' | 'hoist'>>>): Promise<{
         role: Role
         roleId: string
         guildId: string
       }>
+      /** 获取频道身份组成员列表 */
+      get members(): Promise<Member[]>
     }
-    get members(): Promise<Member[]>
-    member(id: string): Promise<Member> & {
-      get mute(): {
-        upd(d: Mute): Promise<void>
-      }
-      role(id: string): Promise<Role>
-    }
-    get channels(): Promise<Channel[]>
   }
+
+  /**
+   * 获取子频道详情
+   * @param id 指定的子频道 ID
+   */
   channel(id: string): Promise<Channel> & {
     get announces(): {
+      /**
+       * 创建子频道公告
+       * @deprecated 2022年3月15日废弃该接口，请使用 添加精华消息
+       */
       add(d: Pick<Announce, 'messageId'>): Promise<Announce>
     }
     announce(msgId: string): {
+      /**
+       * 删除子频道公告
+       * @deprecated 2022年3月15日废弃该接口，请使用 删除精华消息
+       */
       del(): Promise<void>
     }
-    get schedules(): Promise<Schedule[]> & {
+    /** 子频道用户相关 */
+    member(id: string): {
+      /** 获取子频道用户权限 */
+      get permissions(): Promise<ChannelPermissions> & {
+        /** 修改子频道权限 */
+        put(d: { add: string, remove: string }): Promise<void>
+      }
+    }
+    get messages(): {
+      /**
+       * 发送消息
+       * @description 需要控制发送参数的可以使用这个方法，普通消息可以使用 bot.send
+       * @param d 消息发送参数
+       */
+      add(d: Message.Request): Promise<Message>
+    }
+    /** 获取指定消息 */
+    message(id: string): Promise<Message> & {
+      /** 撤回消息 */
+      del(): Promise<void>
+    }
+    /** 获取精华消息 */
+    get pins(): Promise<PinsMessage>
+    pin(msgId: string): {
+      /** 添加精华消息 */
+      put(): Promise<PinsMessage>
+      /** 删除精华消息 (删除子频道内全部精华消息，请将 message_id 设置为 all) */
+      del(): Promise<void>
+    }
+    /** 获取子频道身份组相关 */
+    role(id: string): {
+      /** 获取子频道身份组权限 */
+      get permissions(): Promise<ChannelPermissions> & {
+        /** 修改子频道身份组权限 */
+        put(d: { add: string, remove: string }): Promise<void>
+      }
+    }
+    /** 获取频道日程列表 */
+    schedules(d?: { since?: number }): Promise<Schedule[]> & {
+      /** 创建日程 */
       add(d: Omit<Schedule, 'id'>): Promise<Schedule>
     }
+    /** 获取日程详情 */
     schedule(id: string): Promise<Schedule> & {
+      /** 修改日程 */
       upd(d: Omit<Schedule, 'id'>): Promise<Schedule>
+      /** 删除日程 */
+      del(): Promise<void>
+    }
+    /** 修改子频道 */
+    upd(d: D<Partial<Pick<Channel, 'name' | 'position' | 'parentId' | 'privateType' | 'speakPermission' >>>): Promise<Channel>
+    /** 删除子频道 */
+    del(): Promise<void>
+  }
+
+  /**
+   * 私信
+   * @description 注意私信消息不支持沙盒
+   * @param id {string} 创建私信会话时以及私信消息事件中获取的 guild_id
+   */
+  dm(id: string): {
+    get messages(): {
+      /** 发送私信 */
+      add(d: Message.Request): Promise<Message>
+    }
+    message(id: string): {
+      /** 撤回私信 */
       del(): Promise<void>
     }
   }
@@ -148,6 +287,11 @@ export class Api {
   get me() {
     return this.$request.get<User>('/users/@me')
   }
+
+  /** 创建私信会话 */
+  dms(d: {recipientId: string, sourceGuildId: string}): Promise<DMS> {
+    return this.$request.post<DMS>('/users/@me/dms', d)
+  }
 }
 
 type promiseMethod = 'then' | 'catch' | 'finally'
@@ -161,11 +305,13 @@ const requestProxy = (a: Api, path: string, cPath = ''): Function => new Proxy((
       return getPromiseProp(
         a.$request.get(path + cPath), prop as promiseMethod)
     else {
-      switch (prop as 'add' | 'del' | 'upd') {
+      switch (prop as 'add' | 'del' | 'put' | 'upd') {
         case 'add':
           return (d: any) => a.$request.post(path + cPath, d)
         case 'del':
           return () => a.$request.delete(path + cPath)
+        case 'put':
+          return (d: any) => a.$request.put(path + cPath, d)
         case 'upd':
           return (d: any) => a.$request.patch(path + cPath, d)
       }
