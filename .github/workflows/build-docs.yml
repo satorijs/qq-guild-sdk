@@ -3,7 +3,8 @@ name: build docs
 on:
   push:
     branches: [master]
-  workflow_dispatch:
+    paths:
+      - 'docs/**/*'
 
 jobs:
   docs:
