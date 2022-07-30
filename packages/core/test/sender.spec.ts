@@ -8,7 +8,7 @@ after(() => {
 })
 
 describe('Sender', function () {
-  const $request = new Api(undefined, '', false).$request
+  const $request = new Api('', '', false).$request
   const sender = createSender($request)
 
   it('should test resolve target function.', () => {
