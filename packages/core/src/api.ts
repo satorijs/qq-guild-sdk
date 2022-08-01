@@ -271,6 +271,15 @@ export class Api {
       (error: any) => Promise.reject(error)
     )
     a.interceptors.response.use((response: AxiosResponse) => {
+      if (response.status === 201 || response.status === 202) {
+        throw new AxiosError(
+          response.data.message,
+          response.data.code,
+          response.config,
+          response.request,
+          response
+        )
+      }
       return camelCaseObjKeys(response.data)
     }, async (error: AxiosError<{}>) => {
       const response = error?.response
