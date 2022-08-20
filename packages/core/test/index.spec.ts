@@ -41,8 +41,8 @@ describe('Bot', function () {
       bot.on('ready', resolve)
     })
     await new Promise<void>(resolve => {
-      bot.on('message', m => {
-        bot.send.channel.reply(m.id, m.channelId, 'Hello, world!')
+      bot.on('message', async m => {
+        await bot.send.channel.reply(m.id, m.channelId, 'Hello, world!')
         resolve()
       })
     })

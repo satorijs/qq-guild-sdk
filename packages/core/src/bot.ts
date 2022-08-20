@@ -1,4 +1,4 @@
-import { client as WebSocketClient, connection } from 'websocket'
+import WebSocket from 'ws'
 import { createSender, Message, Sender } from './sender'
 import { camelCaseObjKeys, snakeCaseObjKeys } from './utils'
 import { Channel, Guild, MemberWithGuild, MessageReaction, User } from './common'
@@ -28,8 +28,7 @@ function getOpt(k: string): 'add' | 'upd' | 'del' {
 }
 
 export class Bot extends Api {
-  private client = new WebSocketClient()
-  private connection: connection | null = null
+  private client: WebSocket | null = null
   private events = new Events()
 
   send: Sender
@@ -57,15 +56,15 @@ export class Bot extends Api {
   }
 
   private initConnection = (
-    connection: connection, intents: Bot.Intents | number
+    connection: WebSocket, intents: Bot.Intents | number
   ) => new Promise<void>((resolve, reject) => {
-    this.connection = connection
+    this.client = connection
     let sessionId = ''
-    this.connection.on('message', message => {
-      if (message.type !== 'utf8')
+    this.client.on('message', (message, isBinary) => {
+      if (isBinary)
         return
 
-      const payload = camelCaseObjKeys<Bot.Payload>(JSON.parse(message.utf8Data))
+      const payload = camelCaseObjKeys<Bot.Payload>(JSON.parse(message.toString()))
       switch (payload.op) {
         case Bot.Opcode.HELLO:
           const p: Bot.Payload = {
@@ -124,8 +123,8 @@ export class Bot extends Api {
         case Bot.Opcode.HEARTBEAT_ACK: break
       }
     })
-    this.connection.on('error', reject)
-    this.connection.on('close', (code: number, desc: string) => {
+    this.client.on('error', reject)
+    this.client.on('close', (code: number, desc: string) => {
       this.logger.debug(`[DISCONNECT] ${ code }: ${ desc }`)
       try {
         if (this._retryTimes === undefined)
@@ -158,21 +157,26 @@ export class Bot extends Api {
 
   async startClient(intents: Bot.Intents | number): Promise<void> {
     const { url } = await this.$request.get<{ url: string }>('/gateway')
-    this.client.connect(url)
     return new Promise((resolve, reject) => {
-      this.client.on('connect', conn => {
-        this.initConnection(conn, intents).then(resolve).catch(reject)
+      this.client = new WebSocket(url)
+      this.client.on('open', () => {
+        this.initConnection(this.client!, intents)
+          .then(resolve)
+          .catch(reject)
       })
       this.client.on('connectFailed', reject)
     })
   }
 
   stopClient() {
+    if (!this.client)
+      return
+
     this.client.removeAllListeners('connect')
     this._seq = null
     this._interval = null
-    this.connection?.close()
-    this.connection = null
+    this.client?.close()
+    this.client = null
   }
 }
 
