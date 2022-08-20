@@ -1,6 +1,6 @@
 {
   "name": "qq-guild-sdk",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "qq guild sdk",
   "main": "dist/index.cjs",
   "types": "dist/index.d.ts",
@@ -20,9 +20,9 @@
     "build:dts": "tsc -p tsconfig.dts.json"
   },
   "dependencies": {
+    "@qq-guild-sdk/core": "^2.0.1",
     "dotenv": "^10.0.0",
-    "lodash.merge": "^4.6.2",
-    "@qq-guild-sdk/core": "^2.0.1"
+    "lodash.merge": "^4.6.2"
   },
   "devDependencies": {
     "@types/lodash.merge": "^4.6.6",
