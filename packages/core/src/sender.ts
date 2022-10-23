@@ -99,7 +99,7 @@ export namespace Message {
   export interface Request {
     /** 选填，消息内容，文本内容，支持内嵌格式 */
     content?: string
-    /** 选填，embed 消息，一种特殊的 ark*/
+    /** 选填，embed 消息，一种特殊的 ark */
     embed?: Embed
     /** 选填，ark 消息 */
     ark?: Ark
