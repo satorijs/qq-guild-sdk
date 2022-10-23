@@ -163,6 +163,7 @@ export const resolveTarget = <
     }
   } else {
     if (target.ids && target.id)
+      // @ts-ignore
       target.ids.push(target.id)
 
     if (!target.ids && !target.id)
@@ -183,21 +184,20 @@ export const createSender = <Type extends Sender.TargetType | undefined = undefi
   axiosInstance: InnerAxiosInstance, type?: Type
 ): Sender => {
   const send = (target: Sender.Target, req: Message.Request) => {
-    switch (target.type) {
-      case 'channel':
-        if (target.ids) {
-          return target.ids.map(id => axiosInstance.post<Message.Response>(`/channels/${ id }/messages`, req))
-        } else {
-          return axiosInstance.post<Message.Response>(`/channels/${ target.id }/messages`, req)
-        }
-      case 'private':
-        if (target.ids) {
-          return target.ids.map(id => axiosInstance.post<Message.Response>(`/dms/${ id }/messages`, req))
-        } else {
-          return axiosInstance.post<Message.Response>(`/dms/${ target.id }/messages`, req)
-        }
-      default:
-        throw new Error(`target.type ${ target.type } is not supported`)
+    const pre = {
+      channel: 'channels',
+      private: 'dms'
+    }[target.type]
+
+    if (pre === undefined)
+      throw new Error(`target.type ${ target.type } is not supported`)
+
+    const sendT = (id: string) => axiosInstance.post<Message.Response>(`/${ pre }/${ id }/messages`, resolveRequest(req))
+
+    if (target.ids) {
+      return target.ids.map(sendT)
+    } else {
+      return sendT(target.id)
     }
   }
   const sender = ((target, req: Message.Request) => {
@@ -207,7 +207,9 @@ export const createSender = <Type extends Sender.TargetType | undefined = undefi
       const sendList: Promise<Message.Response>[] = []
       targets.forEach(t => {
         const p = send(t as Sender.Target, req)
-        Array.isArray(p) ? sendList.push(...p) : sendList.push(p)
+        isArray(p)
+          ? sendList.push(...p)
+          : sendList.push(p)
       })
       return Promise.all(sendList)
     } else {
@@ -229,6 +231,8 @@ export const createSender = <Type extends Sender.TargetType | undefined = undefi
 export namespace Sender {
   export type TargetType = 'private' | 'channel'
   export type Target<T = undefined> = T extends undefined
-    ? { type: TargetType; id?: string; ids?: string[] }
+    ?
+    | { type: TargetType; ids: string[]; id?: undefined }
+    | { type: TargetType; ids?: undefined; id: string }
     : string
 }
