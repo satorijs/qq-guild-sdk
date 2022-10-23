@@ -184,6 +184,8 @@ export const createSender = <Type extends Sender.TargetType | undefined = undefi
   axiosInstance: InnerAxiosInstance, type?: Type
 ): Sender => {
   const send = (target: Sender.Target, req: Message.Request) => {
+    const nReq = resolveRequest(req)
+
     const pre = {
       channel: 'channels',
       private: 'dms'
@@ -192,7 +194,9 @@ export const createSender = <Type extends Sender.TargetType | undefined = undefi
     if (pre === undefined)
       throw new Error(`target.type ${ target.type } is not supported`)
 
-    const sendT = (id: string) => axiosInstance.post<Message.Response>(`/${ pre }/${ id }/messages`, resolveRequest(req))
+    const sendT = (id: string) => {
+      return axiosInstance.post<Message.Response>(`/${ pre }/${ id }/messages`, nReq)
+    }
 
     if (target.ids) {
       return target.ids.map(sendT)
