@@ -107,13 +107,13 @@ export interface Api {
       role(id: string): Promise<Role> & {
         /**
          * 创建频道身份组成员
-         * @description 用于将频道 `guild_id` 下的用户 `user_id` 添加到身份组 `role_id` 。
-         * @param d 如果要删除的身份组 ID 是5-子频道管理员，需要增加 channel 对象来指定具体是哪个子频道。
+         * @description 用于将频道 `guildId` 下的用户 `userId` 添加到身份组 `roleId` 。
+         * @param d 如果要删除的身份组 ID 是 5-子频道管理员，需要增加 channel 对象来指定具体是哪个子频道。
          */
         put(d: { channel: Partial<Pick<Channel, 'id'>>}): Promise<void>
         /**
          * 删除频道身份组成员
-         * @description 用于将 用户 `user_id` 从 频道 `guild_id` 的 `role_id` 身份组中移除
+         * @description 用于将 用户 `userId` 从 频道 `guildId` 的 `roleId` 身份组中移除
          * @param d 如果要删除的身份组 ID 是5-子频道管理员，需要增加 channel 对象来指定具体是哪个子频道。
          */
         del(d: { channel: Partial<Pick<Channel, 'id'>>}): Promise<void>
@@ -196,7 +196,7 @@ export interface Api {
     pin(msgId: string): {
       /** 添加精华消息 */
       put(): Promise<PinsMessage>
-      /** 删除精华消息 (删除子频道内全部精华消息，请将 message_id 设置为 all) */
+      /** 删除精华消息 (删除子频道内全部精华消息，请将 messageId 设置为 all) */
       del(): Promise<void>
     }
     /** 获取子频道身份组相关 */
@@ -228,7 +228,7 @@ export interface Api {
   /**
    * 私信
    * @description 注意私信消息不支持沙盒
-   * @param id {string} 创建私信会话时以及私信消息事件中获取的 guild_id
+   * @param id {string} 创建私信会话时以及私信消息事件中获取的 guildId
    */
   dm(id: string): {
     get messages(): {
@@ -339,7 +339,9 @@ export const attachApi = <T extends Api>(a: T) => new Proxy(a, {
       get(_, prop: string) {
         if (promiseMethods.includes(prop))
           return getPromiseProp(
-            a.$request.get(`/users/@me/${path}`), prop as promiseMethod)
+            a.$request.get(`/users/@me/${path}`),
+            prop as promiseMethod
+          )
       },
       apply(_, __, [id, ..._args]) {
         return requestProxy(a, `/${pluralize(path)}/${id}`)
