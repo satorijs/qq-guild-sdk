@@ -1,8 +1,8 @@
 <p align="center">
-  <img width="100" src="./docs/.vuepress/public/qq-guild-sdk.png" alt="Shortln logo">
+  <img width="100" src="./docs/.vuepress/public/qq-guild-sdk.png" alt="QQ Guild SDK">
 </p>
 <h1 align="center">
-  <a href="https://satorijs.github.io/qq-guild-sdk/">QQ Guild Sdk</a>
+  <a href="https://satorijs.github.io/qq-guild-sdk/">QQ Guild SDK</a>
 </h1>
 
 <p align="center">
