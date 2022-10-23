@@ -81,7 +81,7 @@ export namespace Message {
     templateId?: number
     /** markdown 模板模板参数 */
     params?: MarkdownParams
-    /** 原生 markdown 内容,与 template_id 和 params 参数互斥,参数都传值将报错。 */
+    /** 原生 markdown 内容，与 template_id 和 params 参数互斥，参数都传值将报错。 */
     content?: string
   }
   export interface MarkdownParams {
@@ -112,7 +112,7 @@ export namespace Message {
     /** 选填，要回复的事件 id, 在各事件对象中获取。 */
     eventId?: string
     /** 选填，markdown 消息 */
-    markdown?: Markdown
+    markdown?: string | Markdown
   }
   export interface Response extends Message {
     tts: boolean
@@ -176,6 +176,8 @@ const resolveRequest = (req: string | Message.Request) => {
   if (isString(req)) {
     return { content: req }
   } else {
+    if (isString(req.markdown))
+      req.markdown = { content: req.markdown }
     return req
   }
 }
