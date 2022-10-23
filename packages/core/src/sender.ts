@@ -1,5 +1,9 @@
+import { ReadStream } from 'fs'
+import FormData from 'form-data'
+// import fetch from 'node-fetch'
+
 import { Member, User } from './common'
-import { isArray, isString } from './utils'
+import { isArray, isString, snakeCase } from './utils'
 import { InnerAxiosInstance } from './api'
 
 export interface Message {
@@ -107,6 +111,8 @@ export namespace Message {
     messageReference?: Reference
     /** 选填，图片 url 地址，平台会转存该图片，用于下发图片消息 */
     image?: string
+    /** 图片文件。form-data 支持直接通过文件上传的方式发送图片。 */
+    fileImage?: ReadStream
     /** 选填，要回复的消息 id(Message.id), 在 AT_CREATE_MESSAGE 事件中获取。 */
     msgId?: string
     /** 选填，要回复的事件 id, 在各事件对象中获取。 */
@@ -196,8 +202,55 @@ export const createSender = <Type extends Sender.TargetType | undefined = undefi
     if (pre === undefined)
       throw new Error(`target.type ${ target.type } is not supported`)
 
-    const sendT = (id: string) => {
-      return axiosInstance.post<Message.Response>(`/${ pre }/${ id }/messages`, nReq)
+    const sendT = async (id: string) => {
+      let form: FormData | undefined
+      if ('fileImage' in nReq) {
+        form = new FormData()
+        Object.entries(nReq).forEach(([k, v]) => {
+          if (k === 'fileImage') {
+            form!.append(snakeCase(k), nReq.fileImage!, 'image.png')
+          } else {
+            form!.append(snakeCase(k), v)
+          }
+        })
+        // const fileImageBuffer = await new Promise<Buffer>((resolve, reject) => {
+        //   const buffers: Buffer[] = []
+        //   nReq.fileImage!.on('data', chunk => buffers.push(chunk as Buffer))
+        //   // @ts-ignore
+        //   nReq.fileImage!.on('end', () => resolve(Buffer.concat(buffers)))
+        //   nReq.fileImage!.on('error', reject)
+        // })
+        // form.append('file_image', fileImageBuffer, 'file_image')
+        // const buffers = []
+        // for await (const data of nReq.fileImage!) {
+        //   buffers.push(data)
+        // }
+        //
+        // form.append('file_image', Buffer.concat(buffers), 'file_image')
+
+        // return fetch(`https://sandbox.api.sgroup.qq.com/channels/${ id }/messages`, {
+        //   method: 'POST',
+        //   headers: {
+        //     'Content-Type': form.getHeaders()['content-type'],
+        //     // @ts-ignore
+        //     'Authorization': axiosInstance.defaults.headers['Authorization']
+        //   },
+        //   body: form
+        // }).then(res => res.json() as Promise<Message.Response>)
+      }
+      const config = {
+        headers: form ? {
+          'Accept': '*/*',
+          'Content-Type': form.getHeaders()['content-type'],
+          'Accept-Encoding': 'gzip,deflate',
+          'Connection': 'close',
+          'User-Agent': 'node-fetch/1.0 (+https://github.com/bitinn/node-fetch)'
+        } : {
+          'Content-Type': 'application/json'
+        }
+      }
+      // @ts-ignore
+      return axiosInstance.post<Message.Response>(`/${ pre }/${ id }/messages`, form ? form : nReq, config)
     }
 
     if (target.ids) {

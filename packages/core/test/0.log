@@ -1,0 +1,249 @@
+"D:\Program Files\nodejs\node.exe" F:\version-control\GIT\nodejs\backend\qq-guild-sdk\node_modules\mocha\bin\mocha --require ts-node/register --ui bdd --reporter C:\Users\22846\AppData\Local\JetBrains\Toolbox\apps\WebStorm\ch-0\222.3739.57\plugins\NodeJS\js\mocha-intellij\lib\mochaIntellijReporter.js F:\version-control\GIT\nodejs\backend\qq-guild-sdk\packages\core\test\index.spec.ts --grep "^Bot should connect server by websocket\.$"
+HTTP 45260: call onSocket 0 0
+HTTP 45260: createConnection sandbox.api.sgroup.qq.com:443::::::::::::::::::::: [Object: null prototype] {
+  maxRedirects: 21,
+  maxBodyLength: 10485760,
+  protocol: 'https:',
+  path: null,
+  method: 'GET',
+  headers: {
+    Accept: 'application/json, text/plain, */*',
+    'Content-Type': 'application/json',
+    Authorization: 'Bot 101981761.m9UMEQ26vTWYY1ij0YrikrkJNmf2OtYJ',
+    'User-Agent': 'axios/0.27.2'
+  },
+  agent: undefined,
+  agents: { http: undefined, https: undefined },
+  auth: undefined,
+  hostname: 'sandbox.api.sgroup.qq.com',
+  port: 443,
+  nativeProtocols: {
+    'http:': {
+      _connectionListener: [Function: connectionListener],
+      METHODS: [Array],
+      STATUS_CODES: [Object],
+      Agent: [Function],
+      ClientRequest: [Function: ClientRequest],
+      IncomingMessage: [Function: IncomingMessage],
+      OutgoingMessage: [Function: OutgoingMessage],
+      Server: [Function: Server],
+      ServerResponse: [Function: ServerResponse],
+      createServer: [Function: createServer],
+      validateHeaderName: [Function: __node_internal_],
+      validateHeaderValue: [Function: __node_internal_],
+      get: [Function: get],
+      request: [Function: request],
+      maxHeaderSize: [Getter],
+      globalAgent: [Getter/Setter]
+    },
+    'https:': {
+      Agent: [Function: Agent],
+      globalAgent: [Agent],
+      Server: [Function: Server],
+      createServer: [Function: createServer],
+      get: [Function: get],
+      request: [Function: request]
+    }
+  },
+  pathname: '/gateway',
+  _defaultAgent: Agent {
+    _events: [Object: null prototype] {
+      free: [Function (anonymous)],
+      newListener: [Function: maybeEnableKeylog]
+    },
+    _eventsCount: 2,
+    _maxListeners: undefined,
+    defaultPort: 443,
+    protocol: 'https:',
+    options: [Object: null prototype] { path: null },
+    requests: [Object: null prototype] {},
+    sockets: [Object: null prototype] {
+      'sandbox.api.sgroup.qq.com:443:::::::::::::::::::::': []
+    },
+    freeSockets: [Object: null prototype] {},
+    keepAliveMsecs: 1000,
+    keepAlive: false,
+    maxSockets: Infinity,
+    maxFreeSockets: 256,
+    scheduling: 'lifo',
+    maxTotalSockets: Infinity,
+    totalSocketCount: 0,
+    maxCachedSessions: 100,
+    _sessionCache: { map: {}, list: [] },
+    [Symbol(kCapture)]: false
+  },
+  host: 'sandbox.api.sgroup.qq.com',
+  servername: 'sandbox.api.sgroup.qq.com',
+  _agentKey: 'sandbox.api.sgroup.qq.com:443:::::::::::::::::::::'
+}
+HTTP 45260: sockets sandbox.api.sgroup.qq.com:443::::::::::::::::::::: 1 1
+HTTP 45260: outgoing message end.
+(node:45260) Warning: Setting the NODE_DEBUG environment variable to 'http' can expose sensitive data (such as passwords, tokens and authentication headers) in the resulting log.
+(Use `node --trace-warnings ...` to show where the warning was created)
+HTTP 45260: requestTimeout timer moved to req
+HTTP 45260: AGENT incoming response!
+HTTP 45260: AGENT socket.destroySoon()
+HTTP 45260: outgoing message end.
+HTTP 45260: CLIENT socket onClose
+HTTP 45260: removeSocket sandbox.api.sgroup.qq.com:443::::::::::::::::::::: writable: false
+HTTP 45260: HTTP socket close
+HTTP 45260: requestTimeout timer moved to req
+HTTP 45260: AGENT incoming response!
+HTTP 45260: call onSocket 0 0
+HTTP 45260: createConnection sandbox.api.sgroup.qq.com:443::::::::::::::::::::: [Object: null prototype] {
+  maxRedirects: 21,
+  maxBodyLength: 10485760,
+  protocol: 'https:',
+  path: null,
+  method: 'POST',
+  headers: {
+    Accept: 'application/json, text/plain, */*',
+    'Content-Type': 'application/json',
+    Authorization: 'Bot 101981761.m9UMEQ26vTWYY1ij0YrikrkJNmf2OtYJ',
+    'User-Agent': 'axios/0.27.2',
+    'Content-Length': 87
+  },
+  agent: undefined,
+  agents: { http: undefined, https: undefined },
+  auth: undefined,
+  hostname: 'sandbox.api.sgroup.qq.com',
+  port: 443,
+  nativeProtocols: {
+    'http:': {
+      _connectionListener: [Function: connectionListener],
+      METHODS: [Array],
+      STATUS_CODES: [Object],
+      Agent: [Function],
+      ClientRequest: [Function: ClientRequest],
+      IncomingMessage: [Function: IncomingMessage],
+      OutgoingMessage: [Function: OutgoingMessage],
+      Server: [Function: Server],
+      ServerResponse: [Function: ServerResponse],
+      createServer: [Function: createServer],
+      validateHeaderName: [Function: __node_internal_],
+      validateHeaderValue: [Function: __node_internal_],
+      get: [Function: get],
+      request: [Function: request],
+      maxHeaderSize: [Getter],
+      globalAgent: [Getter/Setter]
+    },
+    'https:': {
+      Agent: [Function: Agent],
+      globalAgent: [Agent],
+      Server: [Function: Server],
+      createServer: [Function: createServer],
+      get: [Function: get],
+      request: [Function: request]
+    }
+  },
+  pathname: '/channels/1617735/messages',
+  _defaultAgent: Agent {
+    _events: [Object: null prototype] {
+      free: [Function (anonymous)],
+      newListener: [Function: maybeEnableKeylog]
+    },
+    _eventsCount: 2,
+    _maxListeners: undefined,
+    defaultPort: 443,
+    protocol: 'https:',
+    options: [Object: null prototype] { path: null },
+    requests: [Object: null prototype] {},
+    sockets: [Object: null prototype] {
+      'sandbox.api.sgroup.qq.com:443:::::::::::::::::::::': []
+    },
+    freeSockets: [Object: null prototype] {},
+    keepAliveMsecs: 1000,
+    keepAlive: false,
+    maxSockets: Infinity,
+    maxFreeSockets: 256,
+    scheduling: 'lifo',
+    maxTotalSockets: Infinity,
+    totalSocketCount: 0,
+    maxCachedSessions: 100,
+    _sessionCache: { map: [Object], list: [Array] },
+    [Symbol(kCapture)]: false
+  },
+  host: 'sandbox.api.sgroup.qq.com',
+  servername: 'sandbox.api.sgroup.qq.com',
+  _agentKey: 'sandbox.api.sgroup.qq.com:443:::::::::::::::::::::'
+}
+HTTP 45260: sockets sandbox.api.sgroup.qq.com:443::::::::::::::::::::: 1 1
+HTTP 45260: write ret = true
+HTTP 45260: outgoing message end.
+HTTP 45260: requestTimeout timer moved to req
+HTTP 45260: AGENT incoming response!
+HTTP 45260: AGENT socket.destroySoon()
+HTTP 45260: call onSocket 1 0
+HTTP 45260: createConnection sandbox.api.sgroup.qq.com:443::::::::::::::::::::: [Object: null prototype] {
+  protocol: 'https:',
+  slashes: true,
+  auth: null,
+  host: 'sandbox.api.sgroup.qq.com',
+  port: 443,
+  hostname: 'sandbox.api.sgroup.qq.com',
+  hash: null,
+  search: null,
+  query: null,
+  pathname: '/channels/1617735/messages',
+  path: null,
+  href: 'https://sandbox.api.sgroup.qq.com/channels/1617735/messages',
+  method: 'POST',
+  headers: [Object: null prototype] {
+    'Content-Type': [
+      'multipart/form-data; boundary=--------------------------843693879039665474173578'
+    ],
+    Authorization: [ 'Bot 101981761.m9UMEQ26vTWYY1ij0YrikrkJNmf2OtYJ' ],
+    Accept: [ '*/*' ],
+    'User-Agent': [ 'node-fetch/1.0 (+https://github.com/bitinn/node-fetch)' ],
+    'Accept-Encoding': [ 'gzip,deflate' ],
+    Connection: [ 'close' ]
+  },
+  agent: undefined,
+  _defaultAgent: Agent {
+    _events: [Object: null prototype] {
+      free: [Function (anonymous)],
+      newListener: [Function: maybeEnableKeylog]
+    },
+    _eventsCount: 2,
+    _maxListeners: undefined,
+    defaultPort: 443,
+    protocol: 'https:',
+    options: [Object: null prototype] { path: null },
+    requests: [Object: null prototype] {},
+    sockets: [Object: null prototype] {
+      'sandbox.api.sgroup.qq.com:443:::::::::::::::::::::': [Array]
+    },
+    freeSockets: [Object: null prototype] {},
+    keepAliveMsecs: 1000,
+    keepAlive: false,
+    maxSockets: Infinity,
+    maxFreeSockets: 256,
+    scheduling: 'lifo',
+    maxTotalSockets: Infinity,
+    totalSocketCount: 1,
+    maxCachedSessions: 100,
+    _sessionCache: { map: [Object], list: [Array] },
+    [Symbol(kCapture)]: false
+  },
+  servername: 'sandbox.api.sgroup.qq.com',
+  _agentKey: 'sandbox.api.sgroup.qq.com:443:::::::::::::::::::::'
+}
+HTTP 45260: sockets sandbox.api.sgroup.qq.com:443::::::::::::::::::::: 2 2
+HTTP 45260: write ret = true
+HTTP 45260: CLIENT socket onClose
+HTTP 45260: removeSocket sandbox.api.sgroup.qq.com:443::::::::::::::::::::: writable: false
+HTTP 45260: HTTP socket close
+HTTP 45260: write ret = false
+HTTP 45260: write ret = true
+HTTP 45260: write ret = true
+HTTP 45260: write ret = true
+HTTP 45260: write ret = true
+HTTP 45260: outgoing message end.
+HTTP 45260: requestTimeout timer moved to req
+HTTP 45260: AGENT incoming response!
+HTTP 45260: AGENT socket.destroySoon()
+HTTP 45260: CLIENT socket onClose
+HTTP 45260: removeSocket sandbox.api.sgroup.qq.com:443::::::::::::::::::::: writable: false
+HTTP 45260: HTTP socket close
+
+Process finished with exit code 0

@@ -1,5 +1,10 @@
 import { Bot } from '@qq-guild-sdk/core'
 import { expect } from 'chai'
+import { AxiosError } from 'axios'
+import { Buffer } from 'buffer'
+
+// process.env.http_proxy = ''
+// process.env.https_proxy = ''
 
 declare global {
   namespace NodeJS {
@@ -40,10 +45,19 @@ describe('Bot', function () {
     await new Promise<void>(resolve => {
       bot.on('ready', resolve)
     })
-    await new Promise<void>(resolve => {
+    await new Promise<void>((resolve, reject) => {
       bot.on('message', async m => {
-        await bot.send.channel.reply(m.id, m.channelId, 'Hello, world!')
-        resolve()
+        try {
+          await bot.send.channel.reply(m.id, m.channelId, 'Hello, world!')
+          await bot.send.channel.reply(m.id, m.channelId, {
+            fileImage: require('fs').createReadStream(require('path').join(__dirname, 'test.png'))
+          })
+          resolve()
+        } catch (e) {
+          if (e instanceof AxiosError)
+            console.error(e.request)
+          reject(e)
+        }
       })
     })
   })
