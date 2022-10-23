@@ -39,19 +39,19 @@ export interface Message {
 
 export namespace Message {
   export interface Ark {
-    /** ark模板id（需要先申请） */
+    /** ark 模板 id（需要先申请） */
     templateId: number
-    /** kv值列表 */
+    /** kv 值列表 */
     kv: ArkKv[]
   }
   export interface ArkKv {
     key: string
     value?: string
-    /** ark obj类型的列表 */
+    /** ark obj 类型的列表 */
     obj?: ArkObj[]
   }
   export interface ArkObj {
-    /** ark objkv列表 */
+    /** ark objkv 列表 */
     objKv: ArkObjKv[]
   }
   export interface ArkObjKv {
@@ -81,7 +81,7 @@ export namespace Message {
     templateId?: number
     /** markdown 模板模板参数 */
     params?: MarkdownParams
-    /** 原生 markdown 内容,与 template_id 和 params参数互斥,参数都传值将报错。 */
+    /** 原生 markdown 内容,与 template_id 和 params 参数互斥,参数都传值将报错。 */
     content?: string
   }
   export interface MarkdownParams {
@@ -105,11 +105,11 @@ export namespace Message {
     ark?: Ark
     /** 选填，引用消息 */
     messageReference?: Reference
-    /** 选填，图片url地址，平台会转存该图片，用于下发图片消息 */
+    /** 选填，图片 url 地址，平台会转存该图片，用于下发图片消息 */
     image?: string
-    /** 选填，要回复的消息id(Message.id), 在 AT_CREATE_MESSAGE 事件中获取。 */
+    /** 选填，要回复的消息 id(Message.id), 在 AT_CREATE_MESSAGE 事件中获取。 */
     msgId?: string
-    /** 选填，要回复的事件id, 在各事件对象中获取。 */
+    /** 选填，要回复的事件 id, 在各事件对象中获取。 */
     eventId?: string
     /** 选填，markdown 消息 */
     markdown?: Markdown
