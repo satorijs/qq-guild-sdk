@@ -48,6 +48,9 @@ describe('Bot', function () {
           await bot.send.channel.reply(m.id, m.channelId, {
             fileImage: require('fs').createReadStream(require('path').join(__dirname, 'test.png'))
           })
+          await bot.send.channel.reply(m.id, m.channelId, {
+            fileImage: require('path').join(__dirname, 'test.png')
+          })
           resolve()
         } catch (e) {
           if (e instanceof AxiosError)

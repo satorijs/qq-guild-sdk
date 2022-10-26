@@ -1,4 +1,4 @@
-import { ReadStream } from 'fs'
+import { PathLike, ReadStream, createReadStream, existsSync } from 'fs'
 import FormData from 'form-data'
 
 import { Member, User } from './common'
@@ -119,7 +119,7 @@ export namespace Message {
      */
     image?: string
     /** 图片文件。form-data 支持直接通过文件上传的方式发送图片。 */
-    fileImage?: ReadStream
+    fileImage?: PathLike | ReadStream
     /** 选填，要回复的消息 id(Message.id), 在 AT_CREATE_MESSAGE 事件中获取。 */
     msgId?: string
     /** 选填，要回复的事件 id, 在各事件对象中获取。 */
@@ -193,7 +193,12 @@ const resolveRequest = (req: string | Message.Request) => {
       req.markdown = { content: req.markdown }
     if (isString(req.messageReference))
       req.messageReference = { messageId: req.messageReference }
-    if (!req.image?.startsWith('https://'))
+    if (isString(req.fileImage)) {
+      if (!existsSync(req.fileImage))
+        throw new Error(`fileImage ${req.fileImage} not exists`)
+      req.fileImage = createReadStream(req.fileImage)
+    }
+    if (req.image && !req.image?.startsWith('https://'))
       throw new Error('image must be https url')
     return req
   }
