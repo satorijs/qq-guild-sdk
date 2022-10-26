@@ -6,7 +6,7 @@ const options = {
   bundle: true,
   target: 'node10',
   sourcemap: 'external',
-  external: [ 'axios', 'ws' ]
+  external: [ 'axios', 'ws', 'fs' ]
 } as BuildOptions
 
 Promise.all([
