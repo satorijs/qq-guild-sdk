@@ -1,6 +1,5 @@
 import { ReadStream } from 'fs'
 import FormData from 'form-data'
-// import fetch from 'node-fetch'
 
 import { Member, User } from './common'
 import { isArray, isString, snakeCase } from './utils'
@@ -213,38 +212,10 @@ export const createSender = <Type extends Sender.TargetType | undefined = undefi
             form!.append(snakeCase(k), v)
           }
         })
-        // const fileImageBuffer = await new Promise<Buffer>((resolve, reject) => {
-        //   const buffers: Buffer[] = []
-        //   nReq.fileImage!.on('data', chunk => buffers.push(chunk as Buffer))
-        //   // @ts-ignore
-        //   nReq.fileImage!.on('end', () => resolve(Buffer.concat(buffers)))
-        //   nReq.fileImage!.on('error', reject)
-        // })
-        // form.append('file_image', fileImageBuffer, 'file_image')
-        // const buffers = []
-        // for await (const data of nReq.fileImage!) {
-        //   buffers.push(data)
-        // }
-        //
-        // form.append('file_image', Buffer.concat(buffers), 'file_image')
-
-        // return fetch(`https://sandbox.api.sgroup.qq.com/channels/${ id }/messages`, {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': form.getHeaders()['content-type'],
-        //     // @ts-ignore
-        //     'Authorization': axiosInstance.defaults.headers['Authorization']
-        //   },
-        //   body: form
-        // }).then(res => res.json() as Promise<Message.Response>)
       }
       const config = {
         headers: form ? {
-          'Accept': '*/*',
-          'Content-Type': form.getHeaders()['content-type'],
-          'Accept-Encoding': 'gzip,deflate',
-          'Connection': 'close',
-          'User-Agent': 'node-fetch/1.0 (+https://github.com/bitinn/node-fetch)'
+          'Content-Type': form.getHeaders()['content-type']
         } : {
           'Content-Type': 'application/json'
         }

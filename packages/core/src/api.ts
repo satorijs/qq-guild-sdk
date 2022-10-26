@@ -265,7 +265,8 @@ export class Api {
     })
     a.interceptors.request.use(
       (config: AxiosRequestConfig) => {
-        config.data && (config.data = snakeCaseObjKeys(config.data))
+        if (config.headers?.['Content-Type'] === 'application/json')
+          config.data && (config.data = snakeCaseObjKeys(config.data))
         return config
       },
       (error: any) => Promise.reject(error)

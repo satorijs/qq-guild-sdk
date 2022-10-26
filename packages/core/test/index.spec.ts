@@ -1,10 +1,6 @@
 import { Bot } from '@qq-guild-sdk/core'
 import { expect } from 'chai'
 import { AxiosError } from 'axios'
-import { Buffer } from 'buffer'
-
-// process.env.http_proxy = ''
-// process.env.https_proxy = ''
 
 declare global {
   namespace NodeJS {
