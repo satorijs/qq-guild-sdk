@@ -112,7 +112,11 @@ export namespace Message {
      * 传入值为 string 类型时默认为 msgId
      */
     messageReference?: string | Reference
-    /** 选填，图片 url 地址，平台会转存该图片，用于下发图片消息 */
+    /**
+     * 选填，图片 url 地址，平台会转存该图片，用于下发图片消息
+     *
+     * 该 url 必须为 https 链接
+     */
     image?: string
     /** 图片文件。form-data 支持直接通过文件上传的方式发送图片。 */
     fileImage?: ReadStream
@@ -189,6 +193,8 @@ const resolveRequest = (req: string | Message.Request) => {
       req.markdown = { content: req.markdown }
     if (isString(req.messageReference))
       req.messageReference = { messageId: req.messageReference }
+    if (!req.image?.startsWith('https://'))
+      throw new Error('image must be https url')
     return req
   }
 }
