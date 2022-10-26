@@ -106,8 +106,12 @@ export namespace Message {
     embed?: Embed
     /** 选填，ark 消息 */
     ark?: Ark
-    /** 选填，引用消息 */
-    messageReference?: Reference
+    /**
+     * 选填，引用消息
+     *
+     * 传入值为 string 类型时默认为 msgId
+     */
+    messageReference?: string | Reference
     /** 选填，图片 url 地址，平台会转存该图片，用于下发图片消息 */
     image?: string
     /** 图片文件。form-data 支持直接通过文件上传的方式发送图片。 */
@@ -183,6 +187,8 @@ const resolveRequest = (req: string | Message.Request) => {
   } else {
     if (isString(req.markdown))
       req.markdown = { content: req.markdown }
+    if (isString(req.messageReference))
+      req.messageReference = { messageId: req.messageReference }
     return req
   }
 }
