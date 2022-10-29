@@ -45,11 +45,22 @@ describe('Bot', function () {
       bot.on('message', async m => {
         try {
           await bot.send.channel.reply(m.id, m.channelId, 'Hello, world!')
-          await bot.send.channel.reply(m.id, m.channelId, {
-            fileImage: require('fs').createReadStream(require('path').join(__dirname, 'test.png'))
+          const filepath = require('path').join(__dirname, 'test.png')
+          const readStream = require('fs').createReadStream(filepath)
+          const buffer = await new Promise<Buffer>((resolve, reject) => {
+            const chunks: Buffer[] = []
+            readStream.on('data', (chunk: Buffer) => chunks.push(chunk))
+            readStream.on('end', () => resolve(Buffer.concat(chunks)))
+            readStream.on('error', reject)
           })
           await bot.send.channel.reply(m.id, m.channelId, {
-            fileImage: require('path').join(__dirname, 'test.png')
+            fileImage: buffer
+          })
+          await bot.send.channel.reply(m.id, m.channelId, {
+            fileImage: require('fs').createReadStream(filepath)
+          })
+          await bot.send.channel.reply(m.id, m.channelId, {
+            fileImage: filepath
           })
           resolve()
         } catch (e) {

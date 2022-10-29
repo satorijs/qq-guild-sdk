@@ -119,7 +119,7 @@ export namespace Message {
      */
     image?: string
     /** 图片文件。form-data 支持直接通过文件上传的方式发送图片。 */
-    fileImage?: PathLike | ReadStream
+    fileImage?: PathLike | ReadStream | Buffer
     /** 选填，要回复的消息 id(Message.id), 在 AT_CREATE_MESSAGE 事件中获取。 */
     msgId?: string
     /** 选填，要回复的事件 id, 在各事件对象中获取。 */
