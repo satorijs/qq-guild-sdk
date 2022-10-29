@@ -44,6 +44,11 @@ describe('Bot', function () {
     await new Promise<void>((resolve, reject) => {
       bot.on('message', async m => {
         try {
+          await bot.send.channel.reply(m.id, m.channelId, {
+            messageReference: m.id,
+            content: 'Hello, world!',
+            fileImage: require('path').join(__dirname, 'test.png')
+          })
           await bot.send.channel.reply(m.id, m.channelId, 'Hello, world!')
           const filepath = require('path').join(__dirname, 'test.png')
           const readStream = require('fs').createReadStream(filepath)

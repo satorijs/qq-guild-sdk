@@ -225,9 +225,11 @@ export const createSender = <Type extends Sender.TargetType | undefined = undefi
         Object.entries(nReq).forEach(([k, v]) => {
           if (k === 'fileImage') {
             form!.append(snakeCase(k), nReq.fileImage!, 'image.png')
-          } else {
-            form!.append(snakeCase(k), v)
+            return
           }
+          if (typeof v === 'object')
+            return
+          form!.append(snakeCase(k), v)
         })
       }
       const config = {
@@ -237,7 +239,6 @@ export const createSender = <Type extends Sender.TargetType | undefined = undefi
           'Content-Type': 'application/json'
         }
       }
-      // @ts-ignore
       return axiosInstance.post<Message.Response>(`/${ pre }/${ id }/messages`, form ? form : nReq, config)
     }
 
