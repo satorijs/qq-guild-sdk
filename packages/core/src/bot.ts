@@ -27,6 +27,18 @@ function getOpt(k: string): 'add' | 'upd' | 'del' {
   })[end]
 }
 
+class Future<T> extends Promise<T> {
+  constructor(
+    public res?: (value: T | PromiseLike<T>) => void,
+    public rej?: (reason: any) => void
+  ) {
+    super((resolve, reject) => {
+      this.res = resolve
+      this.rej = reject
+    })
+  }
+}
+
 export class Bot extends Api {
   private client: WebSocket | null = null
   private events = new Events()
@@ -55,6 +67,8 @@ export class Bot extends Api {
     return attachApi(this)
   }
 
+  private reconnectFuture: Future<void> | null = null
+
   private initConnection = (
     connection: WebSocket, intents: Bot.Intents | number
   ) => new Promise<void>((resolve, reject) => {
@@ -79,6 +93,9 @@ export class Bot extends Api {
           }, payload.d.heartbeatInterval)
           this._retryTimes = 0
           resolve()
+          break
+        case Bot.Opcode.RECONNECT:
+          this.reconnectFuture?.res?.()
           break
         case Bot.Opcode.DISPATCH:
           this._seq = payload.s
@@ -157,14 +174,20 @@ export class Bot extends Api {
 
   async startClient(intents: Bot.Intents | number): Promise<void> {
     const { url } = await this.$request.get<{ url: string }>('/gateway')
-    return new Promise((resolve, reject) => {
-      this.client = new WebSocket(url)
-      this.client.on('open', () => {
-        this.initConnection(this.client!, intents)
-          .then(resolve)
-          .catch(reject)
-      })
-      this.client.on('connectFailed', reject)
+    return new Promise<void>((resolve, reject) => {
+        this.client = new WebSocket(url)
+        this.client.on('open', () => {
+          this.initConnection(this.client!, intents)
+            .then(resolve)
+            .catch(reject)
+        })
+        this.client.on('connectFailed', reject)
+        this.reconnectFuture = new Future(() => {
+          this.client?.close()
+          this.client = null
+          this.reconnectFuture = null
+          this.startClient(intents)
+        })
     })
   }
 
@@ -341,6 +364,8 @@ export namespace Bot {
     d: {
       heartbeatInterval: number
     }
+  } | {
+    op: Opcode.RECONNECT
   } | {
     op: Opcode.IDENTIFY
     d: {
