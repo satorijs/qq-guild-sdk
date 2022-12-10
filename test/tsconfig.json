@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@qq-guild-sdk/*": [
+        "packages/*/dist"
+      ],
+      "qq-guild-sdk": [
+        "packages/qq-guild-sdk/dist"
+      ]
+    },
+  }
+}

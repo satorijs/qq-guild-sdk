@@ -9,6 +9,7 @@
     "packages/*"
   ],
   "scripts": {
+    "demo": "yarn test serve",
     "docs": "yarn workspace @qq-guild-sdk/docs",
     "core": "yarn workspace @qq-guild-sdk/core",
     "main": "yarn workspace qq-guild-sdk",
