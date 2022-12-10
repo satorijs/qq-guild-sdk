@@ -10,7 +10,10 @@ async function main() {
   await new Promise<void>(resolve => bot.on('ready', resolve))
   console.log('qq guild bot is ready.')
   bot.on('message', async m => {
-    console.log(`[${m.author.username}]: ${m.content}`)
+    const isPrivate = !m.channelId
+    console.log(`${
+      isPrivate ? '' : `[${m.guildId}] [${m.channelId}] `
+    }[${m.author.username}]: ${m.content}`)
     if (m.content === 'ping') {
       await bot.send.reply(m.id, {
         type: m.channelId ? 'channel' : 'private',
