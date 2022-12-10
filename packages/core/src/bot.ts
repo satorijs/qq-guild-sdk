@@ -27,16 +27,19 @@ function getOpt(k: string): 'add' | 'upd' | 'del' {
   })[end]
 }
 
-class Future<T> extends Promise<T> {
-  constructor(
-    public res?: (value: T | PromiseLike<T>) => void,
-    public rej?: (reason: any) => void
-  ) {
-    super((resolve, reject) => {
-      this.res = resolve
-      this.rej = reject
-    })
-  }
+interface Future<T> extends Promise<T> {
+  res: (value: T) => void
+  rej: (reason: any) => void
+}
+
+const future = <T>(): Future<T> => {
+  let res: (value: T) => void
+  let rej: (reason: any) => void
+  return Object.assign(new Promise<T>((resolve, reject) => {
+    res = resolve
+    rej = reject
+  // @ts-ignore
+  }), { res, rej })
 }
 
 export class Bot extends Api {
@@ -174,7 +177,8 @@ export class Bot extends Api {
 
   async startClient(intents: Bot.Intents | number): Promise<void> {
     const { url } = await this.$request.get<{ url: string }>('/gateway')
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
+      try {
         this.client = new WebSocket(url)
         this.client.on('open', () => {
           this.initConnection(this.client!, intents)
@@ -182,12 +186,15 @@ export class Bot extends Api {
             .catch(reject)
         })
         this.client.on('connectFailed', reject)
-        this.reconnectFuture = new Future(() => {
-          this.client?.close()
-          this.client = null
-          this.reconnectFuture = null
-          this.startClient(intents)
-        })
+        await (this.reconnectFuture = future())
+        this.client?.close()
+        this.client = null
+        this.reconnectFuture = null
+        await this.startClient(intents)
+        resolve()
+      } catch (e) {
+        reject(e)
+      }
     })
   }
 
