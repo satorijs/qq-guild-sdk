@@ -109,7 +109,6 @@ export class Bot extends Api {
               break
             case 'MESSAGE_CREATE':
             case 'AT_MESSAGE_CREATE':
-            case 'DIRECT_MESSAGE_CREATE':
               payload.d.timestamp = new Date(payload.d.timestamp)
               payload.d.editedTimestamp = new Date(payload.d.editedTimestamp)
               payload.d.member.joinedAt = new Date(payload.d.member.joinedAt)
