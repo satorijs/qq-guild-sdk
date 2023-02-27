@@ -38,8 +38,6 @@ export interface Message {
   messageReference?: Message.Reference
   /** 用于私信场景下识别真实的来源频道id */
   srcGuildId?: string
-  /** 判断是否私信 */
-  isPrivate: boolean
 }
 
 export namespace Message {
