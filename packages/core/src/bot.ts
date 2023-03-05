@@ -113,6 +113,7 @@ export class Bot extends Api {
               payload.d.timestamp = new Date(payload.d.timestamp)
               payload.d.editedTimestamp = new Date(payload.d.editedTimestamp)
               payload.d.member.joinedAt = new Date(payload.d.member.joinedAt)
+              payload.d.isPrivate = true
               this.emit('message', payload.d)
               break
             case 'MESSAGE_REACTION_ADD':

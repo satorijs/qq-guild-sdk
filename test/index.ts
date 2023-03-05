@@ -6,7 +6,7 @@ const bot = new Bot({
 })
 
 async function main() {
-  await bot.startClient(Bot.Intents.GUILD_MESSAGES | Bot.Intents.GUILDS)
+  await bot.startClient(Bot.Intents.GUILD_MESSAGES | Bot.Intents.GUILDS | Bot.Intents.DIRECT_MESSAGES)
   await new Promise<void>(resolve => bot.on('ready', resolve))
   console.log('qq guild bot is ready.')
   bot.on('message', async m => {
@@ -20,9 +20,13 @@ async function main() {
         id: m.channelId
           ? m.channelId
           : m.channelId
-      }, 'pong')
+      }, 'pong @everyone')
     }
   })
+  // bot.on('ready', async () => {
+  //   const { guildId } = await bot.createDMS('xxxxx', 'xxxxx')
+  //   bot.send.private(guildId, 'hello')
+  // })
   // test reconnect logic
   // setTimeout(() => {
   //   // @ts-ignore

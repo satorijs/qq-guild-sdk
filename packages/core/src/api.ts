@@ -230,7 +230,7 @@ export interface Api {
    * @description 注意私信消息不支持沙盒
    * @param id {string} 创建私信会话时以及私信消息事件中获取的 guildId
    */
-  dm(id: string): {
+  dms(id: string): {
     get messages(): {
       /** 发送私信 */
       add(d: Message.Request): Promise<Message>
@@ -240,6 +240,8 @@ export interface Api {
       del(): Promise<void>
     }
   }
+
+  createDMS(guildId: string, recipientId: string): Promise<DMS>
 }
 
 export class Api {
@@ -299,8 +301,10 @@ export class Api {
   }
 
   /** 创建私信会话 */
-  dms(d: {recipientId: string, sourceGuildId: string}): Promise<DMS> {
-    return this.$request.post<DMS>('/users/@me/dms', d)
+  createDMS(guildId: string, recipientId: string) {
+    return this.$request.post<DMS>('/users/@me/dms', {
+      recipientId, sourceGuildId: guildId
+    })
   }
 }
 
