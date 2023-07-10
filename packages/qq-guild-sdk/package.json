@@ -9,12 +9,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NWYLZW/qq-guild-sdk.git"
+    "url": "git+https://github.com/satorijs/qq-guild-sdk.git"
   },
   "bugs": {
-    "url": "https://github.com/NWYLZW/qq-guild-sdk/issues"
+    "url": "https://github.com/satorijs/qq-guild-sdk/issues"
   },
-  "homepage": "https://github.com/NWYLZW/qq-guild-sdk",
+  "homepage": "https://github.com/satorijs/qq-guild-sdk",
   "scripts": {
     "build": "ts-node esbuild.ts && yarn build:dts",
     "build:dts": "tsc -p tsconfig.dts.json"
