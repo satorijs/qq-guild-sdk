@@ -2,7 +2,8 @@
   "private": true,
   "name": "qq-guild-sdk",
   "version": "2.0.3",
-  "author": "yijie",
+  "author": "YiJie <yijie4188@gmail.com>",
+  "license": "MIT",
   "workspaces": [
     "docs",
     "test",
